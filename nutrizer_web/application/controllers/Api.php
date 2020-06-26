@@ -10,7 +10,7 @@ class Api extends RestController
     {
         // Construct the parent class
         parent::__construct();
-        // $this->load->model('api_model');
+        $this->load->model('api_model');
     }
 
 
@@ -48,22 +48,14 @@ class Api extends RestController
         die();
     }
 
-    private function generateToken($tokenData = array())
-    {
-        // $tokenData = array();
-        // $tokenData['id'] = 1; //TODO: Replace with data for token
-        return AUTHORIZATION::generateToken($tokenData);
-    }
-
     public function validateUserSession_get()
     {
-        $headers = $this->input->request_headers();
         try {
             $resValidation =  $this->validateToken(true);
             if ($resValidation['success']) {
 
                 $resData = $resValidation['data'];
-                $checkUser = $this->api_sample_model->checkUserId($resData->userid);
+                $checkUser = $this->api_model->checkUserById($resData->userid);
                 if (!$checkUser)
                     throw new Exception("Unauthorized Access!. Please Relogin", 401);
 
@@ -85,7 +77,6 @@ class Api extends RestController
                 "success" => false,
                 "error_code" => $e->getCode(),
                 "message" => $e->getMessage(),
-                "data" => []
             ];
             $this->response($resultEncode, 200);
         }
@@ -93,18 +84,17 @@ class Api extends RestController
 
     public function checkUserExist_post()
     {
-        if ($this->post("username") == "test") {
+        $username = $this->post('username');
+        if ($this->api_model->isUsernameExist($username)) {
             $resultEncode = [
                 "success" => true,
                 "message" => "User already exist",
-                "data" => []
             ];
         } else {
             $resultEncode = [
                 "success" => false,
                 "error_code" => "CUSTOM_CODE",
                 "message" => "User is not exist",
-                "data" => null
             ];
         }
 
@@ -118,63 +108,161 @@ class Api extends RestController
         $password = $this->post("password");
         $birthday = $this->post("birthday");
         $nickname = $this->post("nickname");
-        if ($username == "test") {
-            $resultEncode = [
-                "success" => true,
-                "message" => "User registered successfully",
-                "data" => [
-                    "id" => "123",
-                    "nickname" => $nickname,
-                    "username" => $username,
-                    "privilege" => "user",
-                    "email" => $email,
-                    "birthday" => $birthday,
-                    "token" => "GENERATED_TOKEN"
-                ]
-            ];
-        } else {
+
+        try {
+            if (empty($nickname)) throw new Exception("Nickname is Required", 1);
+            if (empty($username)) throw new Exception("Username is Required", 1);
+            if (empty($password)) throw new Exception("Password is Required", 1);
+            if (empty($birthday)) throw new Exception("Birthday is Required", 1);
+
+            $isUsernameExist = $this->api_model->isUsernameExist($username);
+            if ($isUsernameExist) throw new Exception("Username Already Exist", 1);
+
+            $this->load->helper('string');
+            $loginId  = random_string();
+
+            $date = new DateTime('now');
+            $dataProcess = array(
+                "username" => $username,
+                "nickname" => $nickname,
+                "birthday" => $birthday,
+                "password" => md5($password),
+                "iby" => $username,
+                "idt" => $date->format('Y-m-d H:i:s'),
+                "lastlogin_id" => $loginId,
+                "lastloginfrom" => "mobile",
+                "lastlogin" => $date->format('Y-m-d H:i:s'),
+            );
+
+            $userId =  $this->api_model->createUser($dataProcess);
+
+            if ($userId > 0) {
+
+                $tokenData = array();
+                $tokenData['userid'] = $userId;
+                $tokenData['lastlogin_id'] = $loginId;
+                $tokenNumber = AUTHORIZATION::generateToken($tokenData);
+
+                $resultEncode = [
+                    "success" => true,
+                    "message" => "User registered successfully",
+                    "data" => [
+                        "id" => $userId,
+                        "nickname" => $nickname,
+                        "username" => $username,
+                        "email" => $email,
+                        "birthday" => $birthday,
+                        "token" => $tokenNumber
+                    ]
+                ];
+
+                //create history
+                $this->load->library('user_agent');
+                $history['username'] = $username;
+                $history['iby'] = $username;
+                $history['ip_address'] = $this->input->ip_address();
+                $history['user_agent'] = $this->input->user_agent();
+                $history['resource'] = $this->agent->browser();
+                $history['resource_version'] = $this->agent->version();
+                $history['platform'] = $this->agent->platform();
+
+                $this->api_model->insertLoginHistory($history);
+                $this->response($resultEncode, 200);
+            } else {
+                throw new Exception("Failed to Register", 1);
+            }
+        } catch (Exception $e) {
             $resultEncode = [
                 "success" => false,
-                "error_code" => "CUSTOM_CODE",
-                "message" => "Failed to Register",
-                "data" => []
+                "error_code" => $e->getCode(),
+                "message" => $e->getMessage(),
             ];
-        }
 
-        $this->response($resultEncode, 200);
+            $this->response($resultEncode, 200);
+        }
     }
 
     public function login_post()
     {
         $username = $this->post("username");
         $password = $this->post("password");
-        if ($username == "test" && $password == "12345") {
-            $resultEncode = [
-                "success" => true,
-                "message" => "User logged in successfully",
-                "data" => [
-                    "id" => "123",
-                    "nickname" => "tester",
-                    "username" => $username,
-                    "privilege" => "user",
-                    "email" => "email@mail.com",
-                    "birthday" => "1996-04-03",
-                    "height" => 168,
-                    "weight" => 55,
-                    "bmi" => 21.2,
-                    "token" => "GENERATED_TOKEN"
-                ]
-            ];
-        } else {
+        try {
+            if (empty($username)) throw new Exception("Username is Required", 1);
+
+            $userInfo = $this->api_model->getUserByUsername($username);
+            if (empty($userInfo)) throw new Exception("Username or Password is wrong", 1);
+
+            if ($userInfo['password'] != md5($password)) throw new Exception("Username or Password is wrong", 1);
+            //calculate BMI;
+            if (!empty($userInfo['weight']) && !empty($userInfo['height'])) {
+                $bmi = $userInfo['weight'] / pow($userInfo['height'] / 100, 2);
+            } else {
+                $bmi = 0;
+            }
+
+            $this->load->helper('string');
+            $loginId  = random_string();
+
+            $userId = $userInfo['id'];
+            $tokenData = array();
+            $tokenData['userid'] = $userId;
+            $tokenData['lastlogin_id'] = $loginId;
+            $tokenNumber = AUTHORIZATION::generateToken($tokenData);
+
+            $date = new DateTime('now');
+            $dataProcess = array(
+                "uby" => $username,
+                "udt" => $date->format('Y-m-d H:i:s'),
+                "lastlogin_id" => $loginId,
+                "lastloginfrom" => "mobile",
+                "lastlogin" => $date->format('Y-m-d H:i:s'),
+            );
+            $resultProcess = $this->api_model->updateUser($userId, $dataProcess);
+
+            if ($resultProcess) {
+
+
+
+                $resultEncode = [
+                    "success" => true,
+                    "message" => "User logged in successfully",
+                    "data" => [
+                        "id" => $userInfo['id'],
+                        "nickname" => $userInfo['nickname'],
+                        "username" => $userInfo['username'],
+                        "email" => $userInfo['email'],
+                        "birthday" => $userInfo['birthday'],
+                        "height" => $userInfo['height'],
+                        "weight" => $userInfo['weight'],
+                        "bmi" => $bmi,
+                        "token" => $tokenNumber
+                    ]
+                ];
+
+                //create history
+                $this->load->library('user_agent');
+                $history['username'] = $username;
+                $history['iby'] = $username;
+                $history['ip_address'] = $this->input->ip_address();
+                $history['user_agent'] = $this->input->user_agent();
+                $history['resource'] = $this->agent->browser();
+                $history['resource_version'] = $this->agent->version();
+                $history['platform'] = $this->agent->platform();
+
+                $this->api_model->insertLoginHistory($history);
+                $this->response($resultEncode, 200);
+            } else {
+                throw new Exception("Failed to Login.", 1);
+            }
+        } catch (Exception $e) {
             $resultEncode = [
                 "success" => false,
-                "error_code" => "CUSTOM_CODE",
-                "message" => "Failed to login. Eg: Invalid username/password",
-                "data" => []
+                "error_code" => $e->getCode(),
+                "message" => $e->getMessage(),
             ];
-        }
 
-        $this->response($resultEncode, 200);
+            $this->response($resultEncode, 200);
+        }
     }
 
 
@@ -205,22 +293,49 @@ class Api extends RestController
     {
         $weight = $this->post('weight'); //kg
         $height = $this->post('height'); //cm
-        $bmi = $weight / pow($height / 100, 2);
+        try {
+            if (empty($weight)) throw new Exception("Weight is Required", 1);
+            if (empty($height)) throw new Exception("Height is Required", 1);
 
-        if (true) {
-            $resultEncode = [
-                "success" => true,
-                "message" => "Data has been updated",
-                "data" => $bmi
-            ];
-        } else {
+            $resValidation =  $this->validateToken(true);
+            if(!$resValidation['success']) throw new Exception("UnAuthorized Access, Please Relogin", 401);
+            $resData = $resValidation['data'];
+            $userId = $resData->userid;
+            $userInfo = $this->api_model->getUserById($userId);
+            if (!$userInfo) throw new Exception("Unauthorized Access!. Please Relogin", 401);
+
+            $bmi = $weight / pow($height / 100, 2);
+
+            $date = new DateTime('now');
+            $dataProcess = array(
+                "weight"=>$weight,
+                "height"=>$height,
+                "uby" => $userInfo['username'],
+                "udt" => $date->format('Y-m-d H:i:s'),
+            );
+            $resultProcess = $this->api_model->updateUser($userId, $dataProcess);
+
+            if ($resultProcess) {
+                $resultEncode = [
+                    "success" => true,
+                    "message" => "Data has been updated",
+                    "data" => $bmi
+                ];
+                $this->response($resultEncode, 200);
+            } else {
+                throw new Exception("Failed to Login.", 1);
+            }
+
+        } catch (Exception $e) {
             $resultEncode = [
                 "success" => false,
-                "error_code" => "CUSTOM_CODE",
-                "message" => "Failed to update",
-                "data" => null
+                "error_code" => $e->getCode(),
+                "message" => $e->getMessage(),
             ];
+
+            $this->response($resultEncode, 200);
         }
+
 
         $this->response($resultEncode, 200);
     }

@@ -4,6 +4,77 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         
 class Api_model extends CI_Model {
 
+    public function checkUserById($id)
+    {
+        $this->db->select('id,username,isdeleted,lastlogin_from,islocked,lastlogin_time,lastlogin_id');
+        $this->db->from('tbl_user');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+
+    public function isUsernameExist($username)
+    {
+        $this->db->select('count(1) total_found');
+        $this->db->from('tbl_user');
+        $this->db->where('username', $username);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        if (isset($result['total_found'])) {
+            return $result['total_found'] > 0;
+        } else {
+            return false;
+        }
+    }
+
+    public function createUser($data)
+    {
+        $this->db->insert('tbl_user', $data);
+        $insert_id = $this->db->insert_id();
+        return  $insert_id;
+    }
+
+    public function insertLoginHistory($data)
+    {
+        $this->db->insert('tbl_login', $data);
+        return $this->db->affected_rows() > 0;
+    }
+
+    public function getUserByUsername($username)
+    {
+        $this->db->select("id,username,nickname,gender, height,weight,password,email,birthday,lastlogin_from,islocked,lastlogin_time,lastlogin_id");
+        $this->db->from('tbl_user');
+        $this->db->where('username', $username);
+        $this->db->where('isdeleted', 0);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+
+    public function getUserById($id)
+    {
+        $this->db->select("id,username,nickname,gender, height,weight,password,0 bmi,email,birthday,lastlogin_from,islocked,lastlogin_time,lastlogin_id");
+        $this->db->from('tbl_user');
+        $this->db->where('id', $id);
+        $this->db->where('isdeleted', 0);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+
+    public function updateUser($id, $data)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('tbl_user', $data);
+        return $this->db->affected_rows() > 0;
+    }
+
+
+
+
+    ///====================
+    
     public function insertOTP($username,$code)
     {
         $data = array('username'=>$username,'code'=>$code);
@@ -27,27 +98,10 @@ class Api_model extends CI_Model {
         }
     }
 
-    public function checkUsername($username)
-    {
-        $this->db->select('id,username,isdeleted,islogin,lastloginfrom,islocked,lastlogin,lastlogin_id');
-        $this->db->from('tbl_user');
-        $this->db->where('username', $username);
-        $query = $this->db->get();
-        $result = $query->row_array();
-        return $result;
-    }
+    
 
 
-    public function getUser($username)
-    {
-        $this->db->select("id,username,name,'user' as privilege, isdeleted,islogin,lastloginfrom,islocked,lastlogin,lastlogin_id,subscription_id");
-        $this->db->from('tbl_user');
-        $this->db->where('username', $username);
-        $this->db->where('isdeleted', 0);
-        $query = $this->db->get();
-        $result = $query->row_array();
-        return $result;
-    }
+    
 
 
      public function getUserProfile($username)
@@ -62,25 +116,9 @@ class Api_model extends CI_Model {
     }
 
 
-    public function createUser($data)
-    {
-        $this->db->insert('tbl_user', $data);
-        $insert_id = $this->db->insert_id();
-        return  $insert_id;
-    }
+   
 
-    public function updateUser($username, $data)
-    {
-        $this->db->where('username', $username);
-        $this->db->update('tbl_user', $data);
-        return $this->db->affected_rows() > 0;
-    }
 
-     public function insertLoginHistory($data)
-    {
-        $this->db->insert('tbl_login', $data);
-        return $this->db->affected_rows() > 0;
-    }
 
 
      public function getSubscriptionById($id)
