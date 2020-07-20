@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 
-
-
 class TextFormWidget extends StatelessWidget {
   final String labelText;
   final String Function(String) validator;
   final String Function(String) onSaved;
   final IconData icon;
   final TextInputType keyboardType;
+  final String initialValue;
 
   TextFormWidget(
-      {@required this.labelText, this.validator, this.icon, this.keyboardType,this.onSaved});
+      {@required this.labelText,
+      this.validator,
+      this.icon,
+      this.keyboardType,
+      this.onSaved,
+      this.initialValue});
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: initialValue,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: labelText,
@@ -25,20 +30,30 @@ class TextFormWidget extends StatelessWidget {
               )
             : null,
       ),
-      validator: validator,onSaved: onSaved,
+      validator: validator,
+      onSaved: onSaved,
       style: TextStyle(fontSize: 20),
     );
   }
 }
 
 class TextPasswordFormWidget extends StatefulWidget {
+  final String initialValue;
   final String labelText;
   final String Function(String) validator;
   final String Function(String) onSaved;
   final IconData icon;
   final TextEditingController controller;
 
-  TextPasswordFormWidget({@required this.labelText, this.validator, this.icon,this.onSaved,this.controller, Key key}):super(key:key);
+  TextPasswordFormWidget(
+      {@required this.labelText,
+      this.validator,
+      this.initialValue,
+      this.icon,
+      this.onSaved,
+      this.controller,
+      Key key})
+      : super(key: key);
 
   @override
   _TextPasswordFormWidgetState createState() => _TextPasswordFormWidgetState();
@@ -49,6 +64,7 @@ class _TextPasswordFormWidgetState extends State<TextPasswordFormWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: widget.initialValue,
       obscureText: obscureText,
       controller: widget.controller,
       decoration: InputDecoration(
@@ -80,10 +96,11 @@ class TextDateFormWidget extends StatefulWidget {
   final String labelText;
   final String Function(String) validator;
   final String Function(String) onSaved;
-  
+
   final IconData icon;
 
-  TextDateFormWidget({@required this.labelText, this.validator, this.icon,this.onSaved});
+  TextDateFormWidget(
+      {@required this.labelText, this.validator, this.icon, this.onSaved});
 
   @override
   _TextDateFormWidgetState createState() => _TextDateFormWidgetState();
@@ -98,7 +115,9 @@ class _TextDateFormWidgetState extends State<TextDateFormWidget> {
         initialDate: new DateTime.now(),
         firstDate: new DateTime(1900),
         lastDate: new DateTime.now());
-    if (picked != null) setState(() => _dateCtl.value = TextEditingValue(text:picked.toLocal().toString().split(' ')[0]));
+    if (picked != null)
+      setState(() => _dateCtl.value =
+          TextEditingValue(text: picked.toLocal().toString().split(' ')[0]));
   }
 
   @override

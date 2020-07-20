@@ -1,6 +1,6 @@
 class ApiModel {
   bool success;
-  String errorCode;
+  int errorCode;
   String message;
   dynamic data;
 

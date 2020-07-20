@@ -23,7 +23,7 @@ class UserDomain {
     return await _userDao.createUser(userModel);
   }
 
-   Future<bool> updateSession(UserModel userModel) async {
+  Future<bool> updateSession(UserModel userModel) async {
     return await _userDao.updateUser(userModel);
   }
 
@@ -33,14 +33,21 @@ class UserDomain {
   }
 
   Future<bool> loginByUsername(String username, String password) async {
-    return await addSession(
-        await _userRepository.login(username, password));
+    return await addSession(await _userRepository.login(username, password));
   }
 
   Future<bool> signupByEmail(
-      String email, String username, String password) async {
-    return await addSession(
-        await _userRepository.signup(email, username, password));
+      {String email,
+      String username,
+      String password,
+      String nickname,
+      String birthday}) async {
+    return await addSession(await _userRepository.signup(
+        email: email,
+        birthday: birthday,
+        nickname: nickname,
+        password: password,
+        username: username));
   }
 
   Future<ApiModel> checkExistByusername(String username) async {
@@ -55,8 +62,11 @@ class UserDomain {
     return await _userRepository.updateUserProfile(user);
   }
 
-  Future<double> updateUserProfileBMI(double height, double weight) async {
-    return await _userRepository.updateUserProfileBMI(height,weight);
+  Future<bool> updateUserProfileBMI(double height, double weight) async {
+    return await _userRepository.updateUserProfileBMI(height, weight);
   }
-  
+
+  Future<UserModel> getUserProfile() async {
+    return await _userRepository.getUserProfile();
+  }
 }

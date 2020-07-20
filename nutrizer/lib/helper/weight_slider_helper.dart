@@ -39,7 +39,6 @@ class WeightSliderHelper extends StatelessWidget {
   }
 }
 
-
 class _WeightBackground extends StatelessWidget {
   final Widget child;
 
@@ -60,13 +59,13 @@ class _WeightBackground extends StatelessWidget {
         ),
         Image.asset(
           AssetsHelper.arrow,
+          height: 20,
           color: Theme.of(context).primaryColor,
         ),
       ],
     );
   }
 }
-
 
 class _WeightSliderInternal extends StatelessWidget {
   _WeightSliderInternal({
@@ -148,9 +147,9 @@ class _WeightSliderInternal extends StatelessWidget {
   bool _userStoppedScrolling(Notification notification) {
     return notification is UserScrollNotification &&
         notification.direction == ScrollDirection.idle;
-        // && 
-        // scrollController.position.activity is! HoldScrollActivity;
-        // scrollController.position.isScrollingNotifier is! HoldScrollActivity;
+    // &&
+    // scrollController.position.activity is! HoldScrollActivity;
+    // scrollController.position.isScrollingNotifier is! HoldScrollActivity;
   }
 
   _animateTo(int valueToSelect, {int durationMillis = 200}) {

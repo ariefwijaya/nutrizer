@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:nutrizer/constant.dart';
@@ -53,6 +54,7 @@ class NetworkHelper {
     Map<String, String> authHeaders = await getHeaderAuth();
     if (headers != null) authHeaders.addAll(headers);
 //      print(authHeaders);
+    // print(url + path);
     return await http
         .post(url + path, body: body, headers: authHeaders, encoding: encoding)
         .then((http.Response response) {
@@ -100,7 +102,8 @@ class NetworkHelper {
   HttpClient getHttpClient() {
     HttpClient httpClient = new HttpClient()
       ..connectionTimeout = const Duration(seconds: 10)
-      ..badCertificateCallback = ((X509Certificate cert, String host, int port) => trustSelfSigned);
+      ..badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => trustSelfSigned);
 
     return httpClient;
   }
@@ -110,7 +113,9 @@ class NetworkHelper {
       Map<String, String> headers,
       Map<String, dynamic> body,
       List<MultiFileCustom> files,
-      OnUploadProgressCallback onUploadProgress,Function onUploadDone,Function(String) onUploadError}) async {
+      OnUploadProgressCallback onUploadProgress,
+      Function onUploadDone,
+      Function(String) onUploadError}) async {
     Map<String, String> authHeaders = await getHeaderAuth();
     if (headers != null) authHeaders.addAll(headers);
 
@@ -120,7 +125,7 @@ class NetworkHelper {
     final requestPost = await httpClient.postUrl(uri);
 
     // var request = new http.MultipartRequest("POST", uri);
-    var request = new http.MultipartRequest("",Uri.parse( "uri"));
+    var request = new http.MultipartRequest("", Uri.parse("uri"));
     request.headers.addAll(Map<String, String>.from(authHeaders));
     request.fields.addAll(Map<String, String>.from(body));
 
@@ -137,9 +142,9 @@ class NetworkHelper {
     final totalByteLength = request.contentLength;
 
     for (var key in request.headers.keys) {
-      requestPost.headers.add(key,  request.headers[key]);
+      requestPost.headers.add(key, request.headers[key]);
     }
-  
+
     requestPost.contentLength = totalByteLength;
 
     Stream<List<int>> streamUpload = streamedResponse.transform(
@@ -155,7 +160,7 @@ class NetworkHelper {
           }
         },
         handleError: (error, stack, sink) {
-          if(onUploadError!=null){
+          if (onUploadError != null) {
             onUploadError(error);
           }
           // print("Upload Error: $error");
@@ -163,9 +168,9 @@ class NetworkHelper {
         },
         handleDone: (sink) {
           sink.close();
-          
+
           // print("Upload DOne");
-          if(onUploadDone!=null){
+          if (onUploadDone != null) {
             onUploadDone();
           }
           // UPLOAD DONE;
@@ -180,7 +185,8 @@ class NetworkHelper {
     var statusCode = httpResponse.statusCode;
 
     if (statusCode ~/ 100 != 2) {
-      throw Exception('Error uploading file, Status code: ${httpResponse.statusCode}');
+      throw Exception(
+          'Error uploading file, Status code: ${httpResponse.statusCode}');
     } else {
       return await readResponseClient(httpResponse);
     }
@@ -197,7 +203,7 @@ class NetworkHelper {
 
   Map<String, dynamic> handleResponse(http.Response response) {
     final int statusCode = response.statusCode;
-
+    // debugPrint(response.body.toString());
     if (statusCode == 401) {
       // debugPrint(response.statusCode.toString());
       // debugPrint(response.body.toString());

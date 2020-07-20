@@ -38,9 +38,7 @@ class AuthenticationBloc
       final isSignedIn = await _userDomain.isLoggedIn();
       if (isSignedIn) {
         UserModel userModel = await _userDomain.getCurrentSession();
-        if (userModel.weight == null ||
-            userModel.height == null ||
-            userModel.bmi == null) {
+        if (userModel.weight == null || userModel.height == null) {
           yield AuthenticationAuthenticatedNotCompletedState(user: userModel);
         } else {
           yield AuthenticationAuthenticatedState(user: userModel);
@@ -56,9 +54,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapLoggedInToState() async* {
     try {
       UserModel userModel = await _userDomain.getCurrentSession();
-      if (userModel.weight == null ||
-          userModel.height == null ||
-          userModel.bmi == null) {
+      if (userModel.weight == null || userModel.height == null) {
         yield AuthenticationAuthenticatedNotCompletedState(user: userModel);
       } else {
         yield AuthenticationAuthenticatedState(user: userModel);

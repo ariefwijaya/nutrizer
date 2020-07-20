@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrizer/helper/appstyle_helper.dart';
+import 'package:nutrizer/helper/assets_helper.dart';
 
 class _InfoTileBMICardWidget extends StatelessWidget {
   final String titleText;
@@ -37,14 +38,15 @@ class _InfoTileBMICardWidget extends StatelessWidget {
               Image.asset(
                 assetPathIcon,
                 color: iconColor,
+                height: 18,
               ),
               SizedBox(
                 width: 5,
               ),
               Text(
                 infoText,
-                style: FontStyleHelper.sectionTitleBMI
-                    .copyWith(color: Theme.of(context).accentColor,fontSize: 20),
+                style: FontStyleHelper.sectionTitleBMI.copyWith(
+                    color: Theme.of(context).accentColor, fontSize: 20),
               ),
               SizedBox(
                 width: 5,
@@ -68,7 +70,7 @@ class BMICardWidget extends StatelessWidget {
   final double bmiValue;
   final String bmiScoreText;
 
-  BMICardWidget({this.weight,this.height,this.bmiValue,this.bmiScoreText});
+  BMICardWidget({this.weight, this.height, this.bmiValue, this.bmiScoreText});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +115,7 @@ class BMICardWidget extends StatelessWidget {
                           children: <Widget>[
                             _InfoTileBMICardWidget(
                               titleText: "Tinggi",
-                              assetPathIcon: "assets/icons/height_icon.svg",
+                              assetPathIcon: AssetsHelper.heightIcon,
                               iconColor: ColorPrimaryHelper.danger,
                               infoText: "$height",
                               infoUomText: "cm",
@@ -123,7 +125,7 @@ class BMICardWidget extends StatelessWidget {
                             ),
                             _InfoTileBMICardWidget(
                               titleText: "Berat",
-                              assetPathIcon: "assets/icons/weight_icon.svg",
+                              assetPathIcon: AssetsHelper.weightIcon,
                               iconColor: ColorPrimaryHelper.warning,
                               infoText: "$weight",
                               infoUomText: "kg",

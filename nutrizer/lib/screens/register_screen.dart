@@ -41,15 +41,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           body: BlocProvider<SignupBloc>(
               create: (context) => SignupBloc(),
               child: BlocListener<SignupBloc, SignupState>(
-                condition: (prevState, currentState) {
-                  if (prevState is SignupLoading) {
-                    Navigator.pop(context);
-                  }
-                  return true;
-                },
                 listener: (context, state) {
                   if (state is SignupLoading) {
-                    DialogHelper.showLoadingDialog(context);
+                    // DialogHelper.showLoadingDialog(context);
                   } else if (state is SignupSuccess) {
                     //dont remove the root page, since its contain authentication bloc instance
                     Navigator.popUntil(context, (route) => route.isFirst);
@@ -160,21 +154,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Builder(
-                              builder: (context) => ButtonPrimaryWidget(
-                                "Daftar",
-                                onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    _formKey.currentState.save();
-                                    // Logging in the user w/ Firebas
-                                    BlocProvider.of<SignupBloc>(context).add(
-                                        SignupEmailButtonPressed(
-                                            email: _email,
-                                            username: _username,
-                                            password: _password));
-                                  }
-                                },
-                              ),
+                            BlocBuilder<SignupBloc, SignupState>(
+                              builder: (context, state) {
+                                if (state is SignupLoading) {
+                                  return ButtonLoadingWidget();
+                                }
+
+                                return ButtonPrimaryWidget(
+                                  "Daftar",
+                                  onPressed: () {
+                                    if (_formKey.currentState.validate()) {
+                                      _formKey.currentState.save();
+                                      BlocProvider.of<SignupBloc>(context).add(
+                                          SignupEmailButtonPressed(
+                                              email: _email,
+                                              username: _username,
+                                              password: _password,
+                                              birthday: _birthday,
+                                              nickname: _nickname));
+                                    }
+                                  },
+                                );
+                              },
                             ),
                             SizedBox(
                               height: 100,

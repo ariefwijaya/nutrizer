@@ -22,7 +22,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-  
     if (event is LoginCheckedUsernameExist) {
       yield* _mapLoginCheckedUsernameExistToState(event.username);
     }
@@ -36,7 +35,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Stream<LoginState> _mapLoginCheckedUsernameExistToState(String username) async* {
+  Stream<LoginState> _mapLoginCheckedUsernameExistToState(
+      String username) async* {
     try {
       yield LoginLoading();
       ApiModel resDomain = await _userDomain.checkExistByusername(username);
@@ -58,7 +58,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       String username, String password) async* {
     try {
       yield LoginLoading();
-      final bool isLoggedIn = await _userDomain.loginByUsername(username, password);
+      final bool isLoggedIn =
+          await _userDomain.loginByUsername(username, password);
       if (isLoggedIn) {
         yield LoginSuccess();
       } else {
@@ -73,7 +74,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       String username) async* {
     try {
       yield LoginLoading();
-      final ApiModel resDomain = await _userDomain.requestResetPassword(username);
+      final ApiModel resDomain =
+          await _userDomain.requestResetPassword(username);
       if (resDomain.success) {
         yield LoginForgotPasswordSuccess(message: resDomain.message);
       } else {

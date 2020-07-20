@@ -11,7 +11,7 @@ part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UserDomain _userDomain = UserDomain();
-  
+
   @override
   ProfileState get initialState => ProfileInitial();
 
@@ -22,13 +22,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (event is ProfileChangedBMIWeight) {
       yield ProfileBMIWeightChanged(weight: event.weight);
     }
-    
-     if (event is ProfileChangedBMIHeight) {
+
+    if (event is ProfileChangedBMIHeight) {
       yield ProfileBMIHeightChanged(height: event.height);
     }
 
     if (event is ProfileUpdateBMI) {
-      yield* _mapProfileUpdateBMIToState(event.height,event.weight);
+      yield* _mapProfileUpdateBMIToState(event.height, event.weight);
     }
 
     if (event is ProfileUpdateUser) {
@@ -36,14 +36,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-   Stream<ProfileState> _mapProfileUpdateBMIToState(double height,double weight) async* {
+  Stream<ProfileState> _mapProfileUpdateBMIToState(
+      double height, double weight) async* {
     try {
       yield ProfileLoading();
-      double newBMI  = await _userDomain.updateUserProfileBMI(height,weight);
+      if (!await _userDomain.updateUserProfileBMI(height, weight))
+        throw "Failed to Update";
       UserModel userModel = await _userDomain.getCurrentSession();
       userModel.weight = weight;
       userModel.height = height;
-      userModel.bmi = newBMI;
       await _userDomain.updateSession(userModel);
       yield ProfileSuccess();
     } catch (error) {
@@ -51,8 +52,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  
-   Stream<ProfileState> _mapProfileUpdateUserToState(UserModel userModel) async* {
+  Stream<ProfileState> _mapProfileUpdateUserToState(
+      UserModel userModel) async* {
     try {
       yield ProfileLoading();
       await _userDomain.updateUserProfile(userModel);

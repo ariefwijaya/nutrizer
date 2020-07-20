@@ -13,7 +13,7 @@ class UserRepository {
 
   Future<UserModel> login(String username, String password) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}login",
+      "login",
       body: {"username": username, "password": password},
     );
 
@@ -25,10 +25,20 @@ class UserRepository {
   }
 
   Future<UserModel> signup(
-      String email, String username, String password) async {
+      {String email,
+      String username,
+      String password,
+      String nickname,
+      String birthday}) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}signup",
-      body: {"email": email, "username": username, "password": password},
+      "signup",
+      body: {
+        "email": email,
+        "username": username,
+        "password": password,
+        "nickname": nickname,
+        "birthday": birthday
+      },
     );
     ApiModel apiModel = ApiModel.fromJson(result);
     if (apiModel.success)
@@ -39,7 +49,7 @@ class UserRepository {
 
   Future<ApiModel> checkExistByusername(String username) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}user/checkExist",
+      "user/checkExist",
       body: {"username": username},
     );
 
@@ -48,7 +58,7 @@ class UserRepository {
 
   Future<ApiModel> requestResetPassword(String username) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}resetPassword",
+      "resetPassword",
       body: {"username": username},
     );
 
@@ -57,7 +67,7 @@ class UserRepository {
 
   Future<bool> updateUserProfile(UserModel user) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}user/updateProfile",
+      "user/updateProfile",
       body: user.toJson(),
     );
 
@@ -68,15 +78,27 @@ class UserRepository {
       throw (apiModel.message);
   }
 
-  Future<double> updateUserProfileBMI(double height, double weight) async {
+  Future<bool> updateUserProfileBMI(double height, double weight) async {
     Map<String, dynamic> result = await _networkHelper.post(
-      "${baseUrl}user/updateBMI",
+      "user/updateBMI",
       body: {"weight": weight.toString(), "height": height.toString()},
     );
 
     ApiModel apiModel = ApiModel.fromJson(result);
     if (apiModel.success)
-      return apiModel.data?.toDouble();
+      return true;
+    else
+      throw (apiModel.message);
+  }
+
+  Future<UserModel> getUserProfile() async {
+    Map<String, dynamic> result = await _networkHelper.get(
+      "user/profile",
+    );
+
+    ApiModel apiModel = ApiModel.fromJson(result);
+    if (apiModel.success)
+      return UserModel.fromJson(apiModel.data);
     else
       throw (apiModel.message);
   }

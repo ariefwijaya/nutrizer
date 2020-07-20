@@ -75,15 +75,9 @@ class _BMIUserScreenState extends State<BMIUserScreen> {
                   )),
         ),
         body: BlocListener<ProfileBloc, ProfileState>(
-          condition: (prevState, currentState) {
-            if (prevState is ProfileLoading) {
-              Navigator.pop(context);
-            }
-            return true;
-          },
           listener: (context, state) {
             if (state is ProfileLoading) {
-              DialogHelper.showLoadingDialog(context); //invoking login
+              // DialogHelper.showLoadingDialog(context); //invoking login
             } else if (state is ProfileSuccess) {
               Navigator.popUntil(context, (route) => route.isFirst);
               BlocProvider.of<AuthenticationBloc>(context)
@@ -151,16 +145,22 @@ class _BMIUserScreenState extends State<BMIUserScreen> {
                             }),
                   ),
                 ),
-                Builder(
-                  builder: (context) => ButtonPrimaryWidget(
-                    "Simpan",
-                    onPressed: () => BlocProvider.of<ProfileBloc>(context).add(
-                        ProfileUpdateBMI(
-                            weight: weight.toDouble(),
-                            height: height.toDouble())),
-                    margin: EdgeInsets.only(
-                        left: 70, right: 70, top: 15, bottom: 5),
-                  ),
+                BlocBuilder<ProfileBloc, ProfileState>(
+                  builder: (context, state) {
+                    if (state is ProfileLoading) {
+                      return ButtonLoadingWidget();
+                    }
+
+                    return ButtonPrimaryWidget(
+                      "Simpan",
+                      onPressed: () {
+                        BlocProvider.of<ProfileBloc>(context).add(
+                            ProfileUpdateBMI(
+                                weight: weight.toDouble(),
+                                height: height.toDouble()));
+                      },
+                    );
+                  },
                 ),
                 Navigator.canPop(context)
                     ? FlatButton(

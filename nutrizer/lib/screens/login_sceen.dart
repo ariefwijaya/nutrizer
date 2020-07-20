@@ -29,15 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
         body: BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(),
           child: BlocListener<LoginBloc, LoginState>(
-            condition: (prevState, currentState) {
-              if (prevState is LoginLoading) {
-                Navigator.pop(context);
-              }
-              return true;
-            },
             listener: (context, state) {
               if (state is LoginLoading) {
-                DialogHelper.showLoadingDialog(context); //invoking login
+                // DialogHelper.showLoadingDialog(context); //invoking login
               } else if (state is LoginSuccess) {
                 Navigator.popUntil(context, (route) => route.isFirst);
                 BlocProvider.of<AuthenticationBloc>(context)
@@ -109,7 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     alignment: Alignment.centerRight,
                                     child: FlatButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context,ForgotPasswordRouter);
+                                        Navigator.pushNamed(
+                                            context, ForgotPasswordRouter);
                                       },
                                       child: Text(
                                         "Lupa Password?",
@@ -119,9 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             )),
-                        Container(
-                          child: Builder(
-                            builder: (context) => ButtonPrimaryWidget(
+                        BlocBuilder<LoginBloc, LoginState>(
+                          builder: (context, state) {
+                            if (state is LoginLoading) {
+                              return ButtonLoadingWidget();
+                            }
+
+                            return ButtonPrimaryWidget(
                               "Login",
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
@@ -133,8 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           password: _password));
                                 }
                               },
-                            ),
-                          ),
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 100,

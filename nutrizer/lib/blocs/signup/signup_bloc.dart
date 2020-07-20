@@ -9,8 +9,9 @@ part 'signup_state.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final UserDomain _userDomain;
-  
-  SignupBloc({UserDomain userDomain}): _userDomain = userDomain ?? UserDomain();
+
+  SignupBloc({UserDomain userDomain})
+      : _userDomain = userDomain ?? UserDomain();
 
   @override
   SignupState get initialState => SignupInitial();
@@ -19,17 +20,21 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   Stream<SignupState> mapEventToState(
     SignupEvent event,
   ) async* {
- 
     if (event is SignupEmailButtonPressed) {
-      yield* _mapSignupEmailButtonPressedToState(event.email, event.password,event.username);
+      yield* _mapSignupEmailButtonPressedToState(event);
     }
   }
 
   Stream<SignupState> _mapSignupEmailButtonPressedToState(
-      String email,String password,String username) async* {
+      SignupEmailButtonPressed event) async* {
     try {
       yield SignupLoading();
-      bool signUpSuccess = await _userDomain.signupByEmail(email, username, password);
+      bool signUpSuccess = await _userDomain.signupByEmail(
+          email: event.email,
+          birthday: event.birthday,
+          nickname: event.email,
+          password: event.password,
+          username: event.username);
       if (signUpSuccess) {
         yield SignupSuccess();
       } else {
@@ -40,4 +45,3 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     }
   }
 }
-

@@ -9,4 +9,6 @@ class AssetsHelper {
   static String leavesDecor2 = "${assetImagePath}leaves_decor_2.png";
   static String arrow = "${assetIconPath}arrow.png";
   static String person = "${assetIconPath}person.png";
+  static String weightIcon = "${assetIconPath}weight_icon.png";
+  static String heightIcon = "${assetIconPath}height_icon.png";
 }

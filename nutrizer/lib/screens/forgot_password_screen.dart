@@ -38,8 +38,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               if (state is LoginLoading) {
                 DialogHelper.showLoadingDialog(context); //invoking login
               } else if (state is LoginForgotPasswordSuccess) {
-                DialogHelper.showSnackBar(
-                    context, "${state.message}",
+                DialogHelper.showSnackBar(context, "${state.message}",
                     type: SnackBarType.Success,
                     onClosed: (reason) => Navigator.pop(context));
               } else if (state is LoginFailure) {
