@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nutrizer/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrizer/blocs/login/login_bloc.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:nutrizer/helper/dialog_helper.dart';
-import 'package:nutrizer/routes/router_const.dart';
 import 'package:nutrizer/widgets/button_widget.dart';
-import 'package:nutrizer/widgets/footer_widget.dart';
 import 'package:nutrizer/widgets/header_widget.dart';
 import 'package:nutrizer/widgets/textfield_widget.dart';
 

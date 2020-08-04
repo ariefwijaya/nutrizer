@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:nutrizer/widgets/card_widget.dart';
-import 'brand_widget.dart';
 import 'section_divider_widget.dart';
 
 class HeaderFormWidget extends StatelessWidget {

@@ -3,7 +3,6 @@ import 'package:flutter_pagewise/flutter_pagewise.dart';
 import 'package:nutrizer/domain/kek_domain.dart';
 import 'package:nutrizer/helper/appstyle_helper.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
-import 'package:nutrizer/models/kek_model.dart';
 import 'package:nutrizer/routes/router_const.dart';
 import 'package:nutrizer/widgets/card_widget.dart';
 import 'package:nutrizer/widgets/common_widget.dart';

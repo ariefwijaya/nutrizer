@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrizer/blocs/banner_ads/banner_ads_bloc.dart';
 import 'package:nutrizer/blocs/bmi/bmi_bloc.dart';
 import 'package:nutrizer/blocs/profile/profile_bloc.dart';
-import 'package:nutrizer/helper/appstyle_helper.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:nutrizer/helper/common_helper.dart';
 import 'package:nutrizer/models/menu_model.dart';
@@ -25,10 +24,6 @@ class HomeScreen extends StatelessWidget {
           image: AssetsHelper.book,
           name: "Kamus Nutrisi",
           route: RoutesPath.nutriDict),
-      MenuModel(
-          image: AssetsHelper.calculator,
-          name: "Kalkulator Gizi",
-          route: RoutesPath.nutriCalc)
     ];
 
     return MultiBlocProvider(

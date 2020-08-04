@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:nutrizer/constant.dart';
 import 'package:nutrizer/helper/network_helper.dart';
 import 'package:nutrizer/models/api_model.dart';
 import 'package:nutrizer/models/form_model.dart';

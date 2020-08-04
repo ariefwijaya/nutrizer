@@ -26,7 +26,6 @@ class _BMIUpdateScreenState extends State<BMIUpdateScreen> {
   double _elevation = 0;
   int _currentHeight = 0;
   int _currentWeight = 0;
-  bool _enableSubmit = false;
   int height = 170;
   int weight = 60;
 
