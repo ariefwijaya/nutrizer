@@ -12,11 +12,8 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserDomain _userDomain;
 
-  LoginBloc({UserDomain userDomain, AuthenticationBloc authenticationBloc})
-      : _userDomain = userDomain ?? UserDomain();
-
-  @override
-  LoginState get initialState => LoginInitial();
+  LoginBloc({UserDomain userDomain, AuthenticationBloc authenticationBloc,LoginState loginState})
+      : _userDomain = userDomain ?? UserDomain(),super(loginState);
 
   @override
   Stream<LoginState> mapEventToState(

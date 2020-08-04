@@ -100,7 +100,7 @@ class _BMIUserScreenState extends State<BMIUserScreen> {
                   height: 400,
                   margin: EdgeInsets.only(top: 10, right: 20, left: 20),
                   child: BlocBuilder<ProfileBloc, ProfileState>(
-                    condition: (previous, current) =>
+                    buildWhen: (previous, current) =>
                         current is ProfileBMIHeightChanged ? true : false,
                     builder: (context, ProfileState state) =>
                         HeightSliderHelper(
@@ -129,7 +129,7 @@ class _BMIUserScreenState extends State<BMIUserScreen> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 80, vertical: 10),
                   child: BlocBuilder<ProfileBloc, ProfileState>(
-                    condition: (previous, current) =>
+                    buildWhen: (previous, current) =>
                         current is ProfileBMIWeightChanged ? true : false,
                     builder: (context, ProfileState state) =>
                         WeightSliderHelper(
@@ -139,6 +139,7 @@ class _BMIUserScreenState extends State<BMIUserScreen> {
                             minWeight: 40,
                             maxWeight: 120,
                             onChange: (val) {
+                              weight = val;
                               BlocProvider.of<ProfileBloc>(context).add(
                                   ProfileChangedBMIWeight(
                                       weight: val.toDouble()));

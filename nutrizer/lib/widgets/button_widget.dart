@@ -30,8 +30,9 @@ class ButtonPrimaryWidget extends StatelessWidget {
   final String label;
   final Function onPressed;
   final EdgeInsetsGeometry margin;
+  final Color color;
 
-  ButtonPrimaryWidget(this.label, {this.onPressed, this.margin, Key key})
+  ButtonPrimaryWidget(this.label, {this.onPressed, this.margin,this.color, Key key})
       : super(key: key);
 
   @override
@@ -41,7 +42,7 @@ class ButtonPrimaryWidget extends StatelessWidget {
           ? margin
           : EdgeInsets.symmetric(vertical: 15, horizontal: 70),
       width: double.infinity,
-      child: MaterialButton(
+      child: RaisedButton(
         elevation: 3,
         onPressed: onPressed,
         padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
@@ -50,7 +51,7 @@ class ButtonPrimaryWidget extends StatelessWidget {
                 fontWeight: FontWeight.w800,
                 fontSize: 18,
                 color: Theme.of(context).canvasColor)),
-        color: Theme.of(context).primaryColor,
+        color: color!=null?color:Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(30.0)),
       ),

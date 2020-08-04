@@ -11,4 +11,15 @@ class AssetsHelper {
   static String person = "${assetIconPath}person.png";
   static String weightIcon = "${assetIconPath}weight_icon.png";
   static String heightIcon = "${assetIconPath}height_icon.png";
+  static String invite = "${assetImagePath}invite.png";
+  static String error = "${assetImagePath}error.png";
+  static String notfound = "${assetImagePath}notfound.png";
+  static String offline = "${assetImagePath}offline.png";
+  static String confirmation = "${assetImagePath}confirmation.png";
+  static String aboutApp = "${assetImagePath}aboutapp.png";
+  static String seaweedBanner = "${assetImagePath}seaweed_banner.png";
+  static String book = "${assetImagePath}book.png";
+  static String calculator = "${assetImagePath}calculator.png";
+  static String sleep = "${assetImagePath}sleep.png";
+  static String nutrition = "${assetIconPath}nutrition.png";
 }

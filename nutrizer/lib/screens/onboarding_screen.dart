@@ -30,7 +30,7 @@ class OnBoardingScreen extends StatelessWidget {
             ButtonOnBoardingWidget(
               "Lanjutkan",
               onPressed: () {
-                Navigator.pushNamed(context, LoginRouter);
+                Navigator.pushNamed(context, RoutesPath.login);
               },
             )
           ],

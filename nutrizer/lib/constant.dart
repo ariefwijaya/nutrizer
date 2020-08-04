@@ -6,3 +6,7 @@ const String appName = "NUTRIZER";
 const String appTagLine = "PREGNANCY NUTRITION ANALYZER";
 const String appDescription =
     "Memberikan informasi tentang gizi dan membantu mencegah kekurangan energi kronis pada masa kehamilan.";
+    const String androidAppId = "com.etramatech.nutrizer";
+    const String iosAppId = "";
+    const String androidStoreUrl = "https://play.google.com/store/apps/details?id=com.etramatech.nutrizer";
+    const String iosStoreUrl = "";

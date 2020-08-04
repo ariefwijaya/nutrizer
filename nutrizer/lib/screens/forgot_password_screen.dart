@@ -28,7 +28,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         body: BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(),
           child: BlocListener<LoginBloc, LoginState>(
-            condition: (prevState, currentState) {
+            listenWhen: (prevState, currentState) {
               if (prevState is LoginLoading) {
                 Navigator.pop(context);
               }

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nutrizer/domain/user_domain.dart';
+import 'package:nutrizer/helper/common_helper.dart';
+import 'package:nutrizer/models/form_model.dart';
 import 'package:nutrizer/models/user_model.dart';
 import 'package:meta/meta.dart';
 
@@ -12,8 +14,7 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UserDomain _userDomain = UserDomain();
 
-  @override
-  ProfileState get initialState => ProfileInitial();
+  ProfileBloc({ProfileState profileState}):super(profileState);
 
   @override
   Stream<ProfileState> mapEventToState(
@@ -32,7 +33,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     if (event is ProfileUpdateUser) {
-      yield* _mapProfileUpdateUserToState(event.userModel);
+      yield* _mapProfileUpdateUserToState(event);
+    }
+
+    if (event is ProfileUserFetch) {
+      yield* _mapProfileUserFetchToState();
+    }
+
+    if (event is ProfileChangePassword) {
+      yield* _mapProfileChangePasswordToState(event);
     }
   }
 
@@ -52,19 +61,45 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  Stream<ProfileState> _mapProfileUpdateUserToState(
-      UserModel userModel) async* {
+  Stream<ProfileState> _mapProfileUpdateUserToState(ProfileUpdateUser event) async* {
     try {
       yield ProfileLoading();
-      await _userDomain.updateUserProfile(userModel);
+      await _userDomain.updateUserProfile(event.formData);
       UserModel currentUser = await _userDomain.getCurrentSession();
-      currentUser.nickname = userModel.nickname;
-      currentUser.email = userModel.email;
-      currentUser.birthday = userModel.birthday;
+      currentUser.nickname = event.formData.nickname;
+      currentUser.email = event.formData.email;
       await _userDomain.updateSession(currentUser);
       yield ProfileSuccess();
     } catch (error) {
       yield ProfileFailure(error: error.toString());
+    }
+  }
+
+  Stream<ProfileState> _mapProfileChangePasswordToState(ProfileChangePassword event) async* {
+    try {
+      yield ProfileLoading();
+      await _userDomain.changePassword(event.formData);
+      yield ProfileSuccess();
+    } catch (error) {
+      yield ProfileFailure(error: error.toString());
+    }
+  }
+
+  
+
+  Stream<ProfileState> _mapProfileUserFetchToState() async* {
+    try {
+      yield ProfileFetchLoading();
+
+      UserModel currentUser;
+      if (await ConnectionHelper.isOnline()) {
+        currentUser = await _userDomain.getUserProfile();
+      } else {
+        currentUser = await _userDomain.getCurrentSession();
+      }
+      yield ProfileFetchSuccess(userModel: currentUser);
+    } catch (error) {
+      yield ProfileFetchFailure(error: error.toString());
     }
   }
 }

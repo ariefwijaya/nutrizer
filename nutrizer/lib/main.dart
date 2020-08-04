@@ -11,7 +11,7 @@ import 'package:nutrizer/screens/splash_screen.dart';
 import 'package:nutrizer/screens/bmi_user_screen.dart';
 
 //For debugging purpose only
-class SimpleBlocDelegate extends BlocDelegate {
+class SimpleBlocDelegate extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     super.onEvent(bloc, event);
@@ -34,7 +34,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 void main() async {
   await Hive.initFlutter();
   //For debugging purpose only
-  BlocSupervisor.delegate = SimpleBlocDelegate();
+  Bloc.observer = SimpleBlocDelegate();
   runApp(MyApp());
 }
 

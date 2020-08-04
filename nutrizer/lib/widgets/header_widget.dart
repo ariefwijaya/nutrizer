@@ -40,81 +40,55 @@ class HeaderHomeWidget extends StatelessWidget {
   final int height;
   final double bmiValue;
   final String bmiScoreText;
-  final String greetingText;
   final String sectionText;
   final EdgeInsets padding;
+  final VoidCallback onTap;
+  final bool isLoading;
 
   HeaderHomeWidget(
-      {this.greetingText,
+      {
       this.sectionText,
       this.weight,
       this.height,
       this.bmiScoreText,
       this.bmiValue,
-      this.padding});
+      this.padding,this.onTap,this.isLoading=false});
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        ClipPath(
-          clipper: HeaderClipper(),
-          child: Container(
-            height: 250,
-            padding: padding,
-            color: Theme.of(context).primaryColor,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        greetingText,
-                        style: TextStyle(fontSize: 22),
-                      ),
-                      BrandLogo(width: 25, padding: EdgeInsets.all(10))
-                    ],
-                  ),
-                ],
-              ),
+    return Container(
+      // padding: padding,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topRight,
+            // margin: EdgeInsets.only(top: 50, right: 25),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: SectionDividerWidget(
+              sectionText,
+              titleColor: Theme.of(context).secondaryHeaderColor,
             ),
           ),
-        ),
-        Container(
-          padding: padding,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.topRight,
-                margin: EdgeInsets.only(top: 50, right: 25),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: SectionDividerWidget(
-                  sectionText,
-                  titleColor: Theme.of(context).secondaryHeaderColor,
-                ),
-              ),
-              Container(
-                  alignment: Alignment.topRight,
-                  margin: EdgeInsets.only(top: 50, right: 25),
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Image.asset(
-                    AssetsHelper.seaweedSmall,
-                    width: 60,
-                  )),
-              Container(
-                  margin: EdgeInsets.only(top: 90),
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: BMICardWidget(
-                    height: height,
-                    bmiValue: bmiValue,
-                    weight: weight,
-                    bmiScoreText: bmiScoreText,
-                  )),
-            ],
-          ),
-        )
-      ],
+          Container(
+              alignment: Alignment.topRight,
+              margin: EdgeInsets.only( right: 25),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Image.asset(
+                AssetsHelper.seaweedSmall,
+                width: 60,
+              )),
+          Container(
+              margin: EdgeInsets.only(top: 50),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: BMICardWidget(
+                height: height,
+                bmiValue: bmiValue,
+                weight: weight,
+                bmiScoreText: bmiScoreText,
+                onTap: onTap,
+                isLoading: isLoading,
+              )),
+        ],
+      ),
     );
   }
 }

@@ -145,11 +145,12 @@ class _WeightSliderInternal extends StatelessWidget {
   }
 
   bool _userStoppedScrolling(Notification notification) {
-    return notification is UserScrollNotification &&
-        notification.direction == ScrollDirection.idle;
-    // &&
-    // scrollController.position.activity is! HoldScrollActivity;
-    // scrollController.position.isScrollingNotifier is! HoldScrollActivity;
+     return notification is UserScrollNotification &&
+        notification.direction == ScrollDirection.idle &&
+        scrollController.position.activity is! HoldScrollActivity;
+    // return notification is UserScrollNotification &&
+    //     notification.direction == ScrollDirection.idle;
+  
   }
 
   _animateTo(int valueToSelect, {int durationMillis = 200}) {

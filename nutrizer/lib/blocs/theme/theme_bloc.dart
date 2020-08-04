@@ -8,8 +8,8 @@ part 'theme_event.dart';
 part 'theme_state.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  @override
-  ThemeState get initialState => ThemeState(themeMode: ThemeMode.dark);
+
+  ThemeBloc({ThemeState themeState}):super(themeState??ThemeState(themeMode: ThemeMode.dark));
 
   @override
   Stream<ThemeState> mapEventToState(ThemeEvent event) async* {

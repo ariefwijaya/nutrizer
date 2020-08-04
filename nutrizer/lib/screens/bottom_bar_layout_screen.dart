@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:nutrizer/helper/appstyle_helper.dart';
+import 'package:nutrizer/screens/account_screen.dart';
 import 'package:nutrizer/screens/home_screen.dart';
+import 'package:nutrizer/screens/invite_screen.dart';
 
 class BottomBarLayoutScreen extends StatefulWidget {
   @override
   _BottomBarLayoutScreenState createState() => _BottomBarLayoutScreenState();
 }
 
-class _BottomBarLayoutScreenState extends State<BottomBarLayoutScreen> {
-  int _currentIndex = 0;
+class _BottomBarLayoutScreenState extends State<BottomBarLayoutScreen>
+    with SingleTickerProviderStateMixin {
+  int _selectedIndex = 0;
+  TabController _pageController;
 
-  List<Widget> _widgets = <Widget>[
-    HomeScreen(),
-    Container(),
-    Container(),
-  ];
+  final _listPage = <Widget>[HomeScreen(), InviteScreen(), AccountScreen()];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = TabController(length: _listPage.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +43,13 @@ class _BottomBarLayoutScreenState extends State<BottomBarLayoutScreen> {
           iconSize: 25,
           unselectedItemColor: ColorPrimaryHelper.disabledIcon,
           selectedLabelStyle: FontStyleHelper.brandName
-              .copyWith(color: Theme.of(context).primaryColor, fontSize: 12),
+              .copyWith(color: Theme.of(context).primaryColor, fontSize: 12,
+              fontWeight: FontWeight.normal),
           unselectedLabelStyle: FontStyleHelper.brandName
-              .copyWith(color: Theme.of(context).dividerColor, fontSize: 12),
-          currentIndex: _currentIndex,
+              .copyWith(color: Theme.of(context).dividerColor, fontSize: 12,fontWeight: FontWeight.normal),
+          currentIndex: _selectedIndex,
           selectedItemColor: Theme.of(context).primaryColor,
-          onTap: (value) {
-            setState(() {
-              _currentIndex = value;
-            });
-          },
+          onTap: _onNavBarTapped,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
                 icon: Icon(Icons.home), title: Text('BERANDA')),
@@ -51,7 +60,19 @@ class _BottomBarLayoutScreenState extends State<BottomBarLayoutScreen> {
           ],
         ),
       ),
-      body: _widgets.elementAt(_currentIndex),
+      body: TabBarView(
+        controller: _pageController,
+        children: _listPage,
+
+      ),
     );
+  }
+
+  void _onNavBarTapped(int index) {
+    setState(() {
+      _selectedIndex =index;
+    });
+    _pageController.animateTo(index,
+        duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 }

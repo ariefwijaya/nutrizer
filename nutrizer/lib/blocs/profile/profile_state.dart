@@ -42,3 +42,26 @@ class ProfileBMIWeightChanged extends ProfileState {
   @override
   List<Object> get props => [weight];
 }
+
+
+class ProfileFetchLoading extends ProfileState {}
+
+class ProfileFetchSuccess extends ProfileState {
+  final UserModel userModel;
+
+  ProfileFetchSuccess({this.userModel});
+
+  String get firstName => userModel.nickname.split(" ")[0];
+
+  @override
+  List<Object> get props => [userModel];
+}
+
+class ProfileFetchFailure extends ProfileState {
+  final String error;
+
+  const ProfileFetchFailure({this.error});
+
+  @override
+  List<Object> get props => [error];
+}

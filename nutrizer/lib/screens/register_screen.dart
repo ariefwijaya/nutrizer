@@ -192,7 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           linkText: "Login Sekarang",
                           onPressed: () {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, LoginRouter, (route) => route.isFirst);
+                                context, RoutesPath.login, (route) => route.isFirst);
                           },
                         ),
                       ),

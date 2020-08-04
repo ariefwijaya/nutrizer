@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     child: FlatButton(
                                       onPressed: () {
                                         Navigator.pushNamed(
-                                            context, ForgotPasswordRouter);
+                                            context, RoutesPath.forgotPassword);
                                       },
                                       child: Text(
                                         "Lupa Password?",
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       linkText: "Daftar Sekarang",
                       onPressed: () {
                         Navigator.pushNamedAndRemoveUntil(
-                            context, RegisterRouter, (route) => route.isFirst);
+                            context, RoutesPath.register, (route) => route.isFirst);
                       },
                     ),
                   )

@@ -10,11 +10,8 @@ part 'signup_state.dart';
 class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final UserDomain _userDomain;
 
-  SignupBloc({UserDomain userDomain})
-      : _userDomain = userDomain ?? UserDomain();
-
-  @override
-  SignupState get initialState => SignupInitial();
+  SignupBloc({UserDomain userDomain,SignupState signupState})
+      : _userDomain = userDomain ?? UserDomain(),super(signupState);
 
   @override
   Stream<SignupState> mapEventToState(

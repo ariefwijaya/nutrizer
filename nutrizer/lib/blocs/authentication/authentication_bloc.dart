@@ -13,11 +13,8 @@ class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserDomain _userDomain;
 
-  AuthenticationBloc({UserDomain userDomain})
-      : _userDomain = userDomain ?? UserDomain();
-
-  @override
-  AuthenticationState get initialState => AuthenticationInitialState();
+  AuthenticationBloc({UserDomain userDomain,AuthenticationState authenticationState})
+      : _userDomain = userDomain ?? UserDomain(),super(authenticationState);
 
   @override
   Stream<AuthenticationState> mapEventToState(
@@ -34,11 +31,12 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {
-      await Future.delayed(Duration(seconds: 2));
       final isSignedIn = await _userDomain.isLoggedIn();
       if (isSignedIn) {
         UserModel userModel = await _userDomain.getCurrentSession();
-        if (userModel.weight == null || userModel.height == null) {
+        
+        if (userModel.weight == null || userModel.height == null ||
+        userModel.weight == 0 || userModel.height == 0) {
           yield AuthenticationAuthenticatedNotCompletedState(user: userModel);
         } else {
           yield AuthenticationAuthenticatedState(user: userModel);
@@ -54,7 +52,8 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapLoggedInToState() async* {
     try {
       UserModel userModel = await _userDomain.getCurrentSession();
-      if (userModel.weight == null || userModel.height == null) {
+      if (userModel.weight == null || userModel.height == null ||
+        userModel.weight == 0 || userModel.height == 0) {
         yield AuthenticationAuthenticatedNotCompletedState(user: userModel);
       } else {
         yield AuthenticationAuthenticatedState(user: userModel);

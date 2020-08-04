@@ -8,8 +8,8 @@ part 'appbar_event.dart';
 part 'appbar_state.dart';
 
 class AppbarBloc extends Bloc<AppbarEvent, AppbarState> {
-  @override
-  AppbarState get initialState => AppbarState(elevation: 0);
+
+  AppbarBloc({AppbarState appbarState}):super(appbarState?? AppbarState(elevation: 0));
 
   @override
   Stream<AppbarState> mapEventToState(

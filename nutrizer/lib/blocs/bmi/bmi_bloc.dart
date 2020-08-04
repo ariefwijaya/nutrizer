@@ -11,8 +11,7 @@ part 'bmi_state.dart';
 class BmiBloc extends Bloc<BmiEvent, BmiState> {
   UserDomain _userDomain = UserDomain();
 
-  @override
-  BmiState get initialState => BmiInitial();
+  BmiBloc({BmiState bmiState}) :super(bmiState);
 
   @override
   Stream<BmiState> mapEventToState(
@@ -26,14 +25,14 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
   Stream<BmiState> _mapBmiStartedToState() async* {
     try {
       yield BmiLoading();
-      UserModel userProfile = await _userDomain.getUserProfile();
+      BmiModel bmi = await _userDomain.getBMI();
       yield BmiSuccess(
-        height: userProfile.height,
-        weight: userProfile.weight,
-        bmiValue: userProfile.bmi,
+        height: bmi.height,
+        weight: bmi.weight,
+        bmiValue: bmi.bmi,
+        bmiScoreText: bmi.bmiText
       );
     } catch (error) {
-      print(error);
       yield BmiFailure(error: error.toString());
     }
   }

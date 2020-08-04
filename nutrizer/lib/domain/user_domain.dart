@@ -1,5 +1,6 @@
 import 'package:nutrizer/dao/user_dao.dart';
 import 'package:nutrizer/models/api_model.dart';
+import 'package:nutrizer/models/form_model.dart';
 import 'package:nutrizer/models/user_model.dart';
 import 'package:nutrizer/repositories/user_repository.dart';
 
@@ -58,8 +59,12 @@ class UserDomain {
     return await _userRepository.requestResetPassword(username);
   }
 
-  Future<bool> updateUserProfile(UserModel user) async {
-    return await _userRepository.updateUserProfile(user);
+  Future<bool> updateUserProfile(FormEditProfileModel data) async {
+    return await _userRepository.updateUserProfile(data);
+  }
+
+   Future<bool> changePassword(FormChangePasswordModel data) async {
+    return await _userRepository.changePassword(data);
   }
 
   Future<bool> updateUserProfileBMI(double height, double weight) async {
@@ -69,4 +74,10 @@ class UserDomain {
   Future<UserModel> getUserProfile() async {
     return await _userRepository.getUserProfile();
   }
+
+  Future<BmiModel> getBMI() async {
+    return await _userRepository.getBMI();
+  }
+
+
 }

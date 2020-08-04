@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:nutrizer/constant.dart';
 import 'package:nutrizer/helper/network_helper.dart';
 import 'package:nutrizer/models/api_model.dart';
+import 'package:nutrizer/models/form_model.dart';
 import 'package:nutrizer/models/user_model.dart';
 
 //for connecting to API / database
@@ -65,7 +66,7 @@ class UserRepository {
     return ApiModel.fromJson(result);
   }
 
-  Future<bool> updateUserProfile(UserModel user) async {
+  Future<bool> updateUserProfile(FormEditProfileModel user) async {
     Map<String, dynamic> result = await _networkHelper.post(
       "user/updateProfile",
       body: user.toJson(),
@@ -77,6 +78,22 @@ class UserRepository {
     else
       throw (apiModel.message);
   }
+
+
+Future<bool> changePassword(FormChangePasswordModel user) async {
+    Map<String, dynamic> result = await _networkHelper.post(
+      "user/changePassword",
+      body: user.toJson(),
+    );
+
+    ApiModel apiModel = ApiModel.fromJson(result);
+    if (apiModel.success)
+      return true;
+    else
+      throw (apiModel.message);
+  }
+
+  
 
   Future<bool> updateUserProfileBMI(double height, double weight) async {
     Map<String, dynamic> result = await _networkHelper.post(
@@ -102,4 +119,17 @@ class UserRepository {
     else
       throw (apiModel.message);
   }
+
+  Future<BmiModel> getBMI() async {
+    Map<String, dynamic> result = await _networkHelper.get(
+      "user/bmi",
+    );
+
+    ApiModel apiModel = ApiModel.fromJson(result);
+    if (apiModel.success)
+      return BmiModel.fromJson(apiModel.data);
+    else
+      throw (apiModel.message);
+  }
 }
+

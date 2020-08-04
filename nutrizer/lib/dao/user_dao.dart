@@ -14,6 +14,12 @@ class UserDao {
     return true;
   }
 
+  Future<bool> updateUser(UserModel user) async {
+    final Box db = await dbProvider.dataBox;
+    await db.put(_userKey, user.toJson());
+    return true;
+  }
+
   Future<void> deleteUser() async {
     final Box db = await dbProvider.dataBox;
     await db.deleteFromDisk();
@@ -35,9 +41,5 @@ class UserDao {
     }
   }
 
-  Future<bool> updateUser(UserModel user) async {
-    final Box db = await dbProvider.dataBox;
-    await db.put(_userKey, user.toJson());
-    return true;
-  }
+  
 }
