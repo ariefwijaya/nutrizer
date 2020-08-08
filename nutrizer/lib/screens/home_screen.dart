@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutrizer/blocs/banner_ads/banner_ads_bloc.dart';
@@ -13,17 +15,30 @@ import 'package:nutrizer/widgets/header_widget.dart';
 import 'package:nutrizer/widgets/section_divider_widget.dart';
 
 class HomeScreen extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
+
+    Completer<void> _refreshCompleter =  Completer<void>();
+
     final _listMenu = [
+        MenuModel(
+          image: AssetsHelper.yoga,
+          name: "Cek Indeks Massa Tubuh",
+          route: RoutesPath.bmiCheck),
+       MenuModel(
+          image: AssetsHelper.calculator,
+          name: "Kalkulator Gizi",
+          route: RoutesPath.nutriCalc),
       MenuModel(
-          image: AssetsHelper.sleep,
-          name: "Kekurangan Energi Kronis",
+          image: AssetsHelper.virus,
+          name: "Informasi tentang COVID",
           route: RoutesPath.kek),
       MenuModel(
           image: AssetsHelper.book,
-          name: "Kamus Nutrisi",
+          name: "Kamus Gizi",
           route: RoutesPath.nutriDict),
+     
     ];
 
     return MultiBlocProvider(
@@ -72,113 +87,130 @@ class HomeScreen extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              CustomScrollView(
-                slivers: <Widget>[
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: 15),
-                      child: BlocBuilder<BmiBloc, BmiState>(
-                        builder: (context, state) {
-                          if (state is BmiFailure) {
-                            return HeaderHomeWidget(
-                              padding: EdgeInsets.only(top: 30),
-                              sectionText: "Indeks Massa Tubuh",
-                              height: 0,
-                              weight: 0,
-                              bmiValue: 0,
-                              bmiScoreText: "Failed. Retry",
-                              onTap: () {
-                                BlocProvider.of<BmiBloc>(context)
-                                    .add(BmiStarted());
-                              },
-                            );
-                          }
-
-                          if (state is BmiSuccess) {
-                            return HeaderHomeWidget(
-                              padding: EdgeInsets.only(top: 30),
-                              sectionText: "Indeks Massa Tubuh",
-                              height: state.weight.toInt(),
-                              weight: state.height.toInt(),
-                              bmiValue: state.bmiValue,
-                              bmiScoreText: state.bmiScoreText,
-                              onTap: () async {
-                                await Navigator.pushNamed(
-                                    context, RoutesPath.updateBMI);
-                                BlocProvider.of<BmiBloc>(context)
-                                    .add(BmiStarted());
-                              },
-                            );
-                          }
-
-                          return HeaderHomeWidget(
-                            padding: EdgeInsets.only(top: 30),
-                            sectionText: "Indeks Massa Tubuh",
-                            isLoading: true,
-                          );
+               
+              Builder(
+                              builder:(context)=> RefreshIndicator(
+                   onRefresh: () {
+                          BlocProvider.of<BmiBloc>(context)
+                                        .add(BmiStarted());
+                          return _refreshCompleter.future;
                         },
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocBuilder<BannerAdsBloc, BannerAdsState>(
-                      builder: (context, state) {
-                        if (state is BannerAdsFetchSuccess) {
-                          final banner = state.bannerAdsModel;
-                          return Container(
-                              margin: EdgeInsets.only(bottom: 10),
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: BannerCard(
-                                isLoading: false,
-                                title: banner.title,
-                                subtitle: banner.subtitle,
-                                onTap: banner.linkUrl != null
-                                    ? () => CommonHelper.launchURLInApp(
-                                        banner.linkUrl)
-                                    : null,
-                              ));
-                        }
-
-                        return Container();
-                      },
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SectionDividerWidget(
-                      "Menu Utama",
-                      titleColor: Theme.of(context).accentColor,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 150 / 170,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          final _menu = _listMenu[index];
-                          return MenuCard(
-                            menuTitle: _menu.name,
-                            imagePath: _menu.image,
-                            onPressed: () {
-                              Navigator.pushNamed(context, _menu.route,
-                                  arguments: _menu.name);
+                                child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: 15),
+                          child: BlocConsumer<BmiBloc, BmiState>(
+                            listener: (context, state) {
+                              if( state is BmiSuccess || state is BmiFailure){
+                                _refreshCompleter?.complete();
+                                _refreshCompleter = Completer();
+                              }
                             },
-                          );
-                        },
-                        childCount: _listMenu.length,
+                            builder: (context, state) {
+                              if (state is BmiFailure) {
+                                return HeaderHomeWidget(
+                                  padding: EdgeInsets.only(top: 30),
+                                  sectionText: "Indeks Massa Tubuh",
+                                  height: 0,
+                                  weight: 0,
+                                  bmiValue: 0,
+                                  bmiScoreText: "Failed. Retry",
+                                  onTap: () {
+                                    BlocProvider.of<BmiBloc>(context)
+                                        .add(BmiStarted());
+                                  },
+                                );
+                              }
+
+                              if (state is BmiSuccess) {
+                                final bmiData = state.bmiModel;
+                                return HeaderHomeWidget(
+                                  padding: EdgeInsets.only(top: 30),
+                                  sectionText: "Indeks Massa Tubuh",
+                                  height: bmiData.weight.toInt(),
+                                  weight: bmiData.height.toInt(),
+                                  bmiValue: bmiData.bmi,
+                                  bmiScoreText: bmiData.bmiText,
+                                  onTap: () async {
+                                    await Navigator.pushNamed(
+                                        context, RoutesPath.updateBMI);
+                                    BlocProvider.of<BmiBloc>(context)
+                                        .add(BmiStarted());
+                                  },
+                                );
+                              }
+
+                              return HeaderHomeWidget(
+                                padding: EdgeInsets.only(top: 30),
+                                sectionText: "Indeks Massa Tubuh",
+                                isLoading: true,
+                              );
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                      SliverToBoxAdapter(
+                        child: BlocBuilder<BannerAdsBloc, BannerAdsState>(
+                          builder: (context, state) {
+                            if (state is BannerAdsFetchSuccess) {
+                              final banner = state.bannerAdsModel;
+                              return Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: BannerCard(
+                                    isLoading: false,
+                                    title: banner.title,
+                                    subtitle: banner.subtitle,
+                                    onTap: banner.linkUrl != null
+                                        ? () => CommonHelper.launchURLInApp(
+                                            banner.linkUrl)
+                                        : null,
+                                  ));
+                            }
+
+                            return Container();
+                          },
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SectionDividerWidget(
+                          "Menu Utama",
+                          titleColor: Theme.of(context).accentColor,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        sliver: SliverGrid(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 150 / 170,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              final _menu = _listMenu[index];
+                              return MenuCard(
+                                menuTitle: _menu.name,
+                                imagePath: _menu.image,
+                                onPressed: () {
+                                  Navigator.pushNamed(context, _menu.route,
+                                      arguments: _menu.name);
+                                },
+                              );
+                            },
+                            childCount: _listMenu.length,
+                          ),
+                        ),
+                      ),
+                        SliverPadding(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        )
+                    ],
                   ),
-                    SliverPadding(
-                    padding: EdgeInsets.symmetric(vertical: 15),
-                    )
-                ],
+                ),
               ),
             ],
           ))),

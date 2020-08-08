@@ -4,7 +4,7 @@ import 'package:nutrizer/helper/appstyle_helper.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:shimmer/shimmer.dart';
 
-class _InfoTileBMICardWidget extends StatelessWidget {
+class InfoTileBMICardWidget extends StatelessWidget {
   final String titleText;
   final String assetPathIcon;
   final String infoText;
@@ -12,7 +12,7 @@ class _InfoTileBMICardWidget extends StatelessWidget {
   final Color iconColor;
   final bool isLoading;
 
-  _InfoTileBMICardWidget(
+  InfoTileBMICardWidget(
       {this.titleText,
       this.assetPathIcon,
       this.infoText,
@@ -146,7 +146,7 @@ class BMICardWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            _InfoTileBMICardWidget(
+                            InfoTileBMICardWidget(
                               titleText: "Tinggi",
                               assetPathIcon: AssetsHelper.heightIcon,
                               iconColor: ColorPrimaryHelper.danger,
@@ -157,7 +157,7 @@ class BMICardWidget extends StatelessWidget {
                             SizedBox(
                               height: 15,
                             ),
-                            _InfoTileBMICardWidget(
+                            InfoTileBMICardWidget(
                               titleText: "Berat",
                               assetPathIcon: AssetsHelper.weightIcon,
                               iconColor: ColorPrimaryHelper.warning,
@@ -261,43 +261,64 @@ class BannerCard extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           elevation: 6,
           shadowColor: ColorPrimaryHelper.shadow.withOpacity(0.2),
-          child: Row(
+          child: Stack(
             children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10)),
-                child: Image.asset(AssetsHelper.seaweedBanner, width: 130),
-              ),
-              Expanded(
-                  child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    !isLoading
-                        ? Text(title,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 18))
-                        : Shimmer.fromColors(
-                            child: Text("Loading...",
+              Positioned(
+                  top: 0,
+                  left: -10,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)),
+                    child: Image.asset(AssetsHelper.seaweedBanner, width: 60),
+                  )),
+              Positioned(
+                  bottom: 0,
+                  right: -10,
+                  child: RotatedBox(
+                    quarterTurns: 2,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)),
+                      child: Image.asset(AssetsHelper.seaweedBanner, width: 60),
+                    ),
+                  )),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        !isLoading
+                            ? Text(title,
+                                maxLines: 2,
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 22)),
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.grey[100],
-                          ),
-                    SizedBox(height: 5),
-                    subtitle != null && !isLoading
-                        ? Text(subtitle,
-                            style: TextStyle(
-                                color: ColorPrimaryHelper.textLight,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14))
-                        : Container()
-                  ],
-                ),
-              ))
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 18))
+                            : Shimmer.fromColors(
+                                child: Text("Loading...",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 22)),
+                                baseColor: Colors.grey[300],
+                                highlightColor: Colors.grey[100],
+                              ),
+                        SizedBox(height: 5),
+                        subtitle != null && !isLoading
+                            ? Text(subtitle,
+                                textAlign: TextAlign.justify,
+                                style: TextStyle(
+                                    color: ColorPrimaryHelper.textLight,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 14))
+                            : Container()
+                      ],
+                    ),
+                  ))
+                ],
+              ),
             ],
           )),
     );
@@ -651,18 +672,23 @@ class NutritionFoodCard extends StatelessWidget {
                 ),
         ),
         SizedBox(width: 15),
-        !isLoading? (kkalVal!=null?Text(
-          "$kkalVal kkal",
-          style: TextStyle(color: ColorPrimaryHelper.warning, fontSize: 12),
-        ) : Container()) :Shimmer.fromColors(
-                  child: Container(
-                    color: Colors.white,
-                    width: 60,
-                    height: 14,
-                  ),
-                  baseColor: Colors.grey[200],
-                  highlightColor: Colors.grey[100],
-                )
+        !isLoading
+            ? (kkalVal != null
+                ? Text(
+                    "$kkalVal kkal",
+                    style: TextStyle(
+                        color: ColorPrimaryHelper.warning, fontSize: 12),
+                  )
+                : Container())
+            : Shimmer.fromColors(
+                child: Container(
+                  color: Colors.white,
+                  width: 60,
+                  height: 14,
+                ),
+                baseColor: Colors.grey[200],
+                highlightColor: Colors.grey[100],
+              )
       ]),
     );
   }

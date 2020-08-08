@@ -22,4 +22,12 @@ class AssetsHelper {
   static String calculator = "${assetImagePath}calculator.png";
   static String sleep = "${assetImagePath}sleep.png";
   static String nutrition = "${assetIconPath}nutrition.png";
+  static String medical = "${assetImagePath}medical.png";
+  static String virus = "${assetImagePath}virus.png";
+   static String washHand = "${assetImagePath}washhand.png";
+  static String silent = "${assetImagePath}silent.png";
+  static String yoga = "${assetImagePath}yoga.png";
+  static String cookie = "${assetImagePath}cookie.png";
+  static String male = "${assetIconPath}male.png";
+   static String female = "${assetIconPath}female.png";
 }

@@ -15,4 +15,5 @@ class RoutesPath {
   static const String nutriCalc = "/nutrition_calculator";
   static const String kekDetail = "/kek_detail";
   static const String nutriDictFood = "/nutrition_dict_food";
+  static const String bmiCheck = "/bmi_check";
 }

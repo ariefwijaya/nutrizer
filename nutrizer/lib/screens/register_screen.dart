@@ -23,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _email;
   String _birthday;
   String _nickname;
+  String _gender;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +132,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             : null,
                                       ),
                                       SizedBox(height: 4),
+                                      DropDownFormField(
+                                        titleText: 'Jenis Kelamin',
+                                        filled: false,
+                                        hintText: 'Pilih Jenis Kelamin',
+                                        icon: Icons.power,
+                                        value: _gender,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _gender = value;
+                                          });
+                                        },
+                                        validator: (input) => input.isEmpty
+                                            ? 'Silahkan Pilih Gender'
+                                            : null,
+                                        dataSource: [
+                                          {
+                                            "display": "Male",
+                                            "value": "M",
+                                          },
+                                          {
+                                            "display": "Female",
+                                            "value": "F",
+                                          },
+                                        ],
+                                        textField: 'display',
+                                        valueField: 'value',
+                                      ),
+                                      SizedBox(height: 4),
                                       TextPasswordFormWidget(
                                         labelText: "Password",
                                         controller: _passwordController,
@@ -171,7 +200,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               username: _username,
                                               password: _password,
                                               birthday: _birthday,
-                                              nickname: _nickname));
+                                              nickname: _nickname,
+                                              gender: _gender));
                                     }
                                   },
                                 );
@@ -191,8 +221,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           titleText: "Sudah punya akun?",
                           linkText: "Login Sekarang",
                           onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, RoutesPath.login, (route) => route.isFirst);
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                RoutesPath.login, (route) => route.isFirst);
                           },
                         ),
                       ),

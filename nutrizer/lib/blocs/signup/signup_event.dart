@@ -10,10 +10,11 @@ class SignupEmailButtonPressed extends SignupEvent {
   final String password;
   final String birthday;
   final String nickname;
+  final String gender;
 
   const SignupEmailButtonPressed(
-      {this.email, this.username, this.password, this.birthday, this.nickname});
+      {this.email, this.username, this.password, this.birthday, this.nickname,this.gender});
 
   @override
-  List<Object> get props => [email, username, password, birthday, nickname];
+  List<Object> get props => [email, username, password, birthday, nickname,gender];
 }

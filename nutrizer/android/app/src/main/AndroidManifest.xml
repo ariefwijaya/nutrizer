@@ -9,7 +9,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Nutrizer"
+        android:label="Covid Nutrizer"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"

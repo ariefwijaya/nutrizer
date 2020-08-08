@@ -55,20 +55,23 @@ class BmiModel {
   double weight;
   double bmi;
   String bmiText;
+  int bmiRank;
 
   BmiModel(
       {
       this.height,
       this.weight,
       this.bmi,
-      this.bmiText
+      this.bmiText,
+      this.bmiRank
       });
 
   BmiModel.fromJson(Map<String, dynamic> json) {
     height = json['height'] != null ? json['height'].toDouble() : 0.0;
     weight = json['weight'] != null ? json['weight'].toDouble() : 0.0;
-    bmi = json['bmi'];
+    bmi = json['bmi'] != null ? json['bmi'].toDouble():0.0;
     bmiText = json['bmiText'];
+    bmiRank = json['bmiRank'];
   }
 
   Map<String, dynamic> toJson() {
@@ -76,7 +79,8 @@ class BmiModel {
     data['height'] = this.height;
     data['weight'] = this.weight;
     data['bmi'] = this.bmi;
-    data['bmiText'] = this.bmiText;
+    data['bmiText'] = this.bmiText; 
+    data['bmiRank'] = this.bmiRank;
     return data;
   }
 }

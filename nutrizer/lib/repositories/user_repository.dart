@@ -29,7 +29,8 @@ class UserRepository {
       String username,
       String password,
       String nickname,
-      String birthday}) async {
+      String birthday,
+      String gender}) async {
     Map<String, dynamic> result = await _networkHelper.post(
       "signup",
       body: {
@@ -37,7 +38,8 @@ class UserRepository {
         "username": username,
         "password": password,
         "nickname": nickname,
-        "birthday": birthday
+        "birthday": birthday,
+        "gender": gender
       },
     );
     ApiModel apiModel = ApiModel.fromJson(result);
@@ -78,8 +80,7 @@ class UserRepository {
       throw (apiModel.message);
   }
 
-
-Future<bool> changePassword(FormChangePasswordModel user) async {
+  Future<bool> changePassword(FormChangePasswordModel user) async {
     Map<String, dynamic> result = await _networkHelper.post(
       "user/changePassword",
       body: user.toJson(),
@@ -91,8 +92,6 @@ Future<bool> changePassword(FormChangePasswordModel user) async {
     else
       throw (apiModel.message);
   }
-
-  
 
   Future<bool> updateUserProfileBMI(double height, double weight) async {
     Map<String, dynamic> result = await _networkHelper.post(
@@ -130,5 +129,22 @@ Future<bool> changePassword(FormChangePasswordModel user) async {
     else
       throw (apiModel.message);
   }
-}
 
+  Future<bool> checkTokenValidation() async {
+    Map<String, dynamic> result = await _networkHelper.get(
+      "auth/validation",
+    );
+    ApiModel apiModel = ApiModel.fromJson(result);
+    if (apiModel.success)
+      return true;
+    else
+      return false;
+  }
+
+  Future<ApiModel> getAppInfo() async {
+    Map<String, dynamic> result = await _networkHelper.get(
+      "appInfo",
+    );
+    return ApiModel.fromJson(result);
+  }
+}

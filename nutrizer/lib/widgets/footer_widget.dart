@@ -12,13 +12,14 @@ class FooterFormWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 20),
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-            Theme.of(context).canvasColor,
-            Theme.of(context).canvasColor.withOpacity(0.1)
-          ])),
+          // gradient: LinearGradient(
+          //     begin: Alignment.bottomCenter,
+          //     end: Alignment.topCenter,
+          //     colors: [
+          //   ColorPrimaryHelper.textLight,
+          //   ColorPrimaryHelper.textLight.withOpacity(0.1)
+          // ])
+          ),
       child: ClipPath(
           clipper: FooterFormClipper(),
           child: Container(
@@ -37,7 +38,7 @@ class FooterFormWidget extends StatelessWidget {
                   TextSpan(
                       text: titleText,
                       style: TextStyle(
-                        color: Theme.of(context).canvasColor,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                       )),
                   TextSpan(text: "  "),
                   linkText != null

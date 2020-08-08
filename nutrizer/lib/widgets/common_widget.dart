@@ -84,20 +84,23 @@ class ModalBottomCard extends StatelessWidget {
                       fit: BoxFit.contain,
                       image: AssetImage(imagePath)))),
         ),
+         SizedBox(height: 10),
         Text(
           title,
           style: FontStyleHelper.formHeaderTitle
               .copyWith(fontSize: 20, color: Theme.of(context).accentColor),
         ),
+        
         (subtitle!=null)?
         Container(
-          margin: EdgeInsets.only(top: 5),
+          margin: EdgeInsets.only(top: 10,left: 20,right: 20),
           child: Text(
             subtitle,
             style: FontStyleHelper.formHeaderSubTitle
                 .copyWith(color: Theme.of(context).disabledColor, fontSize: 16),
           ),
         ):Container(),
+         SizedBox(height: 5),
         Container(
           margin: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
           child: ButtonPrimaryWidget(labelButton,
