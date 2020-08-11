@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:nutrizer/constant.dart';
 import 'package:nutrizer/helper/appstyle_helper.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
+import 'package:nutrizer/helper/dialog_helper.dart';
 import 'package:nutrizer/widgets/button_widget.dart';
 import 'package:share/share.dart';
 
@@ -45,9 +48,16 @@ class InviteScreen extends StatelessWidget {
                 )),
             SizedBox(height: 15),
             ButtonPrimaryWidget("Bagikan", onPressed: () {
-              Share.share(
-                  'Yuk cobain aplikasi $appName sekarang!\nPlaystore: $androidStoreUrl .\nAppStore: $iosStoreUrl',
-                  subject: '$appName Invitation');
+              if (Platform.isAndroid) {
+                Share.share(
+                    'Yuk cobain aplikasi $appName sekarang!\n $androidStoreUrl');
+              } else if (Platform.isIOS) {
+                Share.share(
+                    'Yuk cobain aplikasi $appName sekarang!\n $iosStoreUrl',
+                    subject: '$appName Invitation');
+              }else{
+                DialogHelper.showSnackBar(context, "Fitur ini belum bisa digunakan di handphone kamu");
+              }
             })
           ],
         ),

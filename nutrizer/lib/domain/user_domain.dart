@@ -42,13 +42,15 @@ class UserDomain {
       String username,
       String password,
       String nickname,
-      String birthday}) async {
+      String birthday,
+      String gender}) async {
     return await addSession(await _userRepository.signup(
         email: email,
         birthday: birthday,
         nickname: nickname,
         password: password,
-        username: username));
+        username: username,
+        gender: gender));
   }
 
   Future<ApiModel> checkExistByusername(String username) async {
@@ -63,7 +65,7 @@ class UserDomain {
     return await _userRepository.updateUserProfile(data);
   }
 
-   Future<bool> changePassword(FormChangePasswordModel data) async {
+  Future<bool> changePassword(FormChangePasswordModel data) async {
     return await _userRepository.changePassword(data);
   }
 
@@ -79,5 +81,12 @@ class UserDomain {
     return await _userRepository.getBMI();
   }
 
+  Future<ApiModel> getAppInfo() async {
+    return await _userRepository.getAppInfo();
+  }
 
+  Future<bool> checkTokenValidation() async {
+    return await _userRepository.checkTokenValidation();
+  }
+  
 }

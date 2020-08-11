@@ -30,6 +30,8 @@ class KekFailure extends KekState {
   List<Object> get props => [error];
 }
 
+class KekOffline extends KekState {}
+
 
 class KekDetailLoading extends KekState {}
 
@@ -51,3 +53,5 @@ class KekDetailFailure extends KekState {
   @override
   List<Object> get props => [error];
 }
+
+class KekDetailOffline extends KekState {}

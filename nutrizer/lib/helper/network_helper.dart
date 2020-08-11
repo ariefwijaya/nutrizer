@@ -52,8 +52,9 @@ class NetworkHelper {
       encoding}) async {
     Map<String, String> authHeaders = await getHeaderAuth();
     if (headers != null) authHeaders.addAll(headers);
-//      print(authHeaders);
+    //  print(authHeaders);
     // print(url + path);
+    // print(body);
     return await http
         .post(url + path, body: body, headers: authHeaders, encoding: encoding)
         .then((http.Response response) {

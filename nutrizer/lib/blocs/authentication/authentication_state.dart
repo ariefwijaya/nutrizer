@@ -38,3 +38,40 @@ class AuthenticationFailureState extends AuthenticationState {
   @override
   String toString() => 'AuthenticationFailure { error: $message }';
 }
+
+
+class AppNeedUpdate extends AuthenticationState {
+  final String message;
+
+  AppNeedUpdate({@required this.message});
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'AppNeedUpdate { error: $message }';
+}
+
+class AppForceUpdate extends AuthenticationState {
+  final String message;
+
+  AppForceUpdate({@required this.message});
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'AppForceUpdate { error: $message }';
+}
+
+class AuthenticationExpiredState extends AuthenticationState {
+  final String message;
+
+  AuthenticationExpiredState({@required this.message});
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'AuthenticationExpiredState { error: $message }';
+}

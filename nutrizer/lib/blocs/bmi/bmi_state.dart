@@ -11,16 +11,13 @@ class BmiInitial extends BmiState {}
 class BmiLoading extends BmiState {}
 
 class BmiSuccess extends BmiState {
-  final double height;
-  final double weight;
-  final double bmiValue;
-  final String bmiScoreText;
+  final BmiModel bmiModel;
 
   const BmiSuccess(
-      {this.height, this.weight, this.bmiScoreText, this.bmiValue});
+      {this.bmiModel});
 
   @override
-  List<Object> get props => [height, weight, bmiScoreText, bmiValue];
+  List<Object> get props => [bmiModel];
 }
 
 class BmiFailure extends BmiState {

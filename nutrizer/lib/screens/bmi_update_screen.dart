@@ -95,8 +95,8 @@ class _BMIUpdateScreenState extends State<BMIUpdateScreen> {
               );
             }
             if (bmiState is BmiSuccess) {
-              _currentHeight = bmiState.height.toInt();
-              _currentWeight = bmiState.weight.toInt();
+              _currentHeight = bmiState.bmiModel.height.toInt();
+              _currentWeight = bmiState.bmiModel.weight.toInt();
 
               height = _currentHeight;
               weight = _currentWeight;

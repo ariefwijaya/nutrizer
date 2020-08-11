@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutrizer/helper/appstyle_helper.dart';
 
 enum SnackBarType { Error, Success, Info, Warning }
 
@@ -68,9 +69,9 @@ class DialogHelper {
   static void showSnackBar(BuildContext context, String text,
       {SnackBarType type, Function(SnackBarClosedReason) onClosed}) {
     Widget iconBar = Container();
-    final danger = Color(0xFFB84444);
-    final success = Color(0xFF5BB65F0);
-    final warning = Color(0xFFD8D25B);
+    final danger = ColorPrimaryHelper.danger;
+    final success = ColorPrimaryHelper.primary;
+    final warning = ColorPrimaryHelper.warning;
 
     if (type == SnackBarType.Error) {
       iconBar = Icon(
@@ -87,7 +88,7 @@ class DialogHelper {
         Icons.warning,
         color: warning,
       );
-    } else if (type == SnackBarType.Info) {
+    } else {
       iconBar = Icon(
         Icons.info,
         color: Theme.of(context).accentColor,

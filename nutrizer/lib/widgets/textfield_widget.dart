@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutrizer/helper/appstyle_helper.dart';
 
 class TextFormWidget extends StatelessWidget {
   final String labelText;
@@ -32,7 +33,7 @@ class TextFormWidget extends StatelessWidget {
       ),
       validator: validator,
       onSaved: onSaved,
-      style: TextStyle(fontSize: 20),
+      style: TextStyle(fontSize: 16),
     );
   }
 }
@@ -159,7 +160,7 @@ class TextFormV2Widget extends StatelessWidget {
   TextFormV2Widget(
       {this.hintText,
       this.validator,
-      this.enabled=true,
+      this.enabled = true,
       this.labelText,
       this.keyboardType,
       this.onSaved,
@@ -241,4 +242,92 @@ class _TextPasswordFormV2WidgetState extends State<TextPasswordFormV2Widget> {
           fontWeight: FontWeight.w700),
     );
   }
+}
+
+class DropDownFormField extends FormField<dynamic> {
+  final String titleText;
+  final String hintText;
+  final bool required;
+  final String errorText;
+  final dynamic value;
+  final List dataSource;
+  final String textField;
+  final String valueField;
+  final Function onChanged;
+  final bool filled;
+  final EdgeInsets contentPadding;
+  final IconData icon;
+
+  DropDownFormField(
+      {FormFieldSetter<dynamic> onSaved,
+      FormFieldValidator<dynamic> validator,
+      bool autovalidate = false,
+      this.titleText = 'Title',
+      this.hintText = 'Select one option',
+      this.required = false,
+      this.errorText = 'Please select one option',
+      this.value,
+      this.dataSource,
+      this.textField,
+      this.valueField,
+      this.onChanged,
+      this.filled = true,
+      this.icon,
+      this.contentPadding = const EdgeInsets.fromLTRB(12, 12, 8, 0)})
+      : super(
+          onSaved: onSaved,
+          validator: validator,
+          autovalidate: autovalidate,
+          initialValue: value == '' ? null : value,
+          builder: (FormFieldState<dynamic> state) {
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  InputDecorator(
+                    decoration: InputDecoration(
+                      contentPadding: contentPadding,
+                      labelText: titleText,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      prefixIcon: icon != null
+                          ? Icon(
+                              icon,
+                              size: 20,
+                              color: ColorPrimaryHelper.primary,
+                            )
+                          : Container(),
+                      filled: filled,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<dynamic>(
+                        hint: Text(
+                          hintText,
+                          style: TextStyle(color: Colors.grey.shade500),
+                        ),
+                        value: value == '' ? null : value,
+                        onChanged: (dynamic newValue) {
+                          state.didChange(newValue);
+                          onChanged(newValue);
+                        },
+                        items: dataSource.map((item) {
+                          return DropdownMenuItem<dynamic>(
+                            value: item[valueField],
+                            child: Text(item[textField]),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: state.hasError ? 5.0 : 0.0),
+                  Text(
+                    state.hasError ? state.errorText : '',
+                    style: TextStyle(
+                        color: Colors.redAccent.shade700,
+                        fontSize: state.hasError ? 12.0 : 0.0),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
 }

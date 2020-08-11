@@ -13,7 +13,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserDomain _userDomain;
 
   LoginBloc({UserDomain userDomain, AuthenticationBloc authenticationBloc,LoginState loginState})
-      : _userDomain = userDomain ?? UserDomain(),super(loginState);
+      : _userDomain = userDomain ?? UserDomain(),super(loginState??LoginInitial());
 
   @override
   Stream<LoginState> mapEventToState(

@@ -98,19 +98,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ? 'Please enter password'
                                         : null,
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(vertical: 3.0),
-                                    alignment: Alignment.centerRight,
-                                    child: FlatButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, RoutesPath.forgotPassword);
-                                      },
-                                      child: Text(
-                                        "Lupa Password?",
-                                      ),
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   margin: EdgeInsets.symmetric(vertical: 3.0),
+                                  //   alignment: Alignment.centerRight,
+                                  //   child: FlatButton(
+                                  //     onPressed: () {
+                                  //       Navigator.pushNamed(
+                                  //           context, RoutesPath.forgotPassword);
+                                  //     },
+                                  //     child: Text(
+                                  //       "Lupa Password?",
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             )),

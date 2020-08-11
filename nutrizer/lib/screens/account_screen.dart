@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,84 +13,119 @@ import 'package:nutrizer/widgets/button_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:store_redirect/store_redirect.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({Key key}) : super(key: key);
+
+  @override
+  _AccountScreenState createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  Completer<void> _refreshCompleter;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshCompleter = Completer<void>();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProfileBloc>(
       create: (context) => ProfileBloc()..add(ProfileUserFetch()),
       child: Scaffold(
-        body: ListView(
-          children: <Widget>[
-            BlocBuilder<ProfileBloc, ProfileState>(builder: (context, state) {
-              if (state is ProfileFetchSuccess) {
-                return _buildProfileInfo(
-                    name: state.userModel.nickname,
-                    email: state.userModel.email,
-                    isLoading: false);
-              }
+        body:   BlocConsumer<ProfileBloc, ProfileState>(
+                  listener: (context, state) {
+                if (state is ProfileFetchSuccess ||
+                    state is ProfileFetchFailure) {
+                  _refreshCompleter?.complete();
+                  _refreshCompleter = Completer();
+                }
+              }, builder: (context, state) {
+                Widget profileInfoWidget;
+                  if (state is ProfileFetchSuccess) {
+                    profileInfoWidget= _buildProfileInfo(
+                        name: state.userModel.nickname,
+                        email: state.userModel.email,
+                        isLoading: false);
+                  }
 
-              if (state is ProfileFetchFailure) {
-                return _buildProfileInfo(
-                  name: "Nick Name",
-                  email: "Email",
-                );
-              }
+                  else if (state is ProfileFetchFailure) {
+                    profileInfoWidget= _buildProfileInfo(
+                      name: "Nick Name",
+                      email: "Email",
+                    );
+                  }else{
+ profileInfoWidget= _buildProfileInfo();
+                  }
 
-              return _buildProfileInfo();
-            }),
-            SizedBox(height: 25),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 25),
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  BoxShadow(
-                      color: ColorPrimaryHelper.lightShadow,
-                      blurRadius: 5,
-                      offset: Offset(0, 3))
-                ]),
-                child: Column(
-                  children: <Widget>[
-                    Builder(builder: (context) {
-                      return _buildAccountMenu(
-                          iconData: Icons.account_circle,
-                          menuName: "Ubah Profil",
-                          onTap: () async {
-                            await Navigator.pushNamed(
-                                context, RoutesPath.editProfile);
-                            BlocProvider.of<ProfileBloc>(context)
-                                .add(ProfileUserFetch());
-                          });
-                    }),
-                    _buildDivider(),
-                    _buildAccountMenu(
-                        iconData: Icons.info_outline,
-                        menuName: "Tentang Aplikasi",
-                        onTap: () {
-                          Navigator.pushNamed(context, RoutesPath.aboutApp);
+                 
+
+
+                return RefreshIndicator(
+            onRefresh: () {
+              BlocProvider.of<ProfileBloc>(context).add(
+                ProfileUserFetch()
+              );
+              return _refreshCompleter.future;
+            },
+            child: ListView(
+              children: <Widget>[
+              profileInfoWidget,
+                SizedBox(height: 25),
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                          color: ColorPrimaryHelper.lightShadow,
+                          blurRadius: 5,
+                          offset: Offset(0, 3))
+                    ]),
+                    child: Column(
+                      children: <Widget>[
+                        Builder(builder: (context) {
+                          return _buildAccountMenu(
+                              iconData: Icons.account_circle,
+                              menuName: "Ubah Profil",
+                              onTap: () async {
+                                await Navigator.pushNamed(
+                                    context, RoutesPath.editProfile);
+                                BlocProvider.of<ProfileBloc>(context)
+                                    .add(ProfileUserFetch());
+                              });
                         }),
-                    _buildDivider(),
-                    _buildAccountMenu(
-                        iconData: Icons.star,
-                        menuName: "Kasih Bintang",
-                        onTap: () {
-                          StoreRedirect.redirect(
-                              androidAppId: androidAppId, iOSAppId: iosAppId);
-                        }),
-                    _buildDivider(),
-                    ButtonPrimaryWidget(
-                      "Logout",
-                      margin:
-                          EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-                      color: ColorPrimaryHelper.danger,
-                      onPressed: () {
-                        BlocProvider.of<AuthenticationBloc>(context)
-                            .add(AuthenticationLoggedOutEvent());
-                      },
-                    )
-                  ],
-                )),
-          ],
+                        _buildDivider(),
+                        _buildAccountMenu(
+                            iconData: Icons.info_outline,
+                            menuName: "Tentang Aplikasi",
+                            onTap: () {
+                              Navigator.pushNamed(context, RoutesPath.aboutApp);
+                            }),
+                        _buildDivider(),
+                        _buildAccountMenu(
+                            iconData: Icons.star,
+                            menuName: "Kasih Bintang",
+                            onTap: () {
+                              StoreRedirect.redirect(
+                                  androidAppId: androidAppId, iOSAppId: iosAppId);
+                            }),
+                        _buildDivider(),
+                        ButtonPrimaryWidget(
+                          "Logout",
+                          margin:
+                              EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                          color: ColorPrimaryHelper.danger,
+                          onPressed: () {
+                            BlocProvider.of<AuthenticationBloc>(context)
+                                .add(AuthenticationLoggedOutEvent());
+                          },
+                        )
+                      ],
+                    )),
+              ],
+            ),
+          );
+              },
         ),
       ),
     );
@@ -130,14 +167,16 @@ class AccountScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 25),
       child: Column(
         children: <Widget>[
-         isLoading? Shimmer.fromColors(
-              baseColor: Colors.grey,
-              highlightColor: Colors.grey.shade200,
-              enabled: isLoading,
-              child:  CircleAvatar(
-                      radius: 45,
-                      backgroundColor: Colors.white,
-                    )) : (imageUrl == null
+          isLoading
+              ? Shimmer.fromColors(
+                  baseColor: Colors.grey,
+                  highlightColor: Colors.grey.shade200,
+                  enabled: isLoading,
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: Colors.white,
+                  ))
+              : (imageUrl == null
                   ? CircleAvatar(
                       radius: 45,
                       child: isLoading

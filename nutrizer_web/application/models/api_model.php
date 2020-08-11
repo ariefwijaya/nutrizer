@@ -37,7 +37,7 @@ class Api_model extends CI_Model {
 
     public function insertLoginHistory($data)
     {
-        $this->db->insert('tbl_login', $data);
+        $this->db->insert('tbl_history_login', $data);
         return $this->db->affected_rows() > 0;
     }
 
@@ -62,6 +62,7 @@ class Api_model extends CI_Model {
         $result = $query->row_array();
         return $result;
     }
+    
 
     public function updateUser($id, $data)
     {
@@ -71,6 +72,66 @@ class Api_model extends CI_Model {
     }
 
 
+    public function getConfig($id)
+    {
+        $this->db->select("value,idt,udt");
+        $this->db->from("tbl_config");
+        $this->db->where("option", $id);
+        $this->db->where("enable", 1);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    function getKekList($offset=0,$limit=8){
+        $this->db->select("id,title,subtitle");
+        $this->db->from("tbl_kek");
+        $this->db->order_by("order_pos","ASC");
+        $this->db->limit($limit);
+        $this->db->offset($offset);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getKekById($id){
+        $this->db->select("id,title,subtitle,content");
+        $this->db->from("tbl_kek");
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+
+    function getNutriDictList($offset=0,$limit=8){
+        $this->db->select("id,name,image imageUrl");
+        $this->db->from("tbl_nutrition_type");
+        $this->db->order_by("order_pos","ASC");
+        $this->db->limit($limit);
+        $this->db->offset($offset);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getNutriFoodCatByNutrition($id,$offset=0,$limit=8){
+        $this->db->select("b.id,b.name,b.image imageUrl");
+        $this->db->from("tbl_nutri_food_cat a");
+        $this->db->join("tbl_food_category b","a.food_cat_id=b.id");
+        $this->db->order_by("b.order_pos","ASC");
+        $this->db->where("a.nutrition_type_id",$id);
+        $this->db->limit($limit);
+        $this->db->offset($offset);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    function getNutriFoodByCat($id){
+        $this->db->select("b.id,b.name,b.image imageUrl,b.kkal");
+        $this->db->from("tbl_food_cat a");
+        $this->db->join("tbl_food b","a.food_id=b.id");
+        $this->db->order_by("b.order_pos","ASC");
+        $this->db->where("a.food_cat_id",$id);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 
 
     ///====================
@@ -97,11 +158,6 @@ class Api_model extends CI_Model {
             return false;
         }
     }
-
-    
-
-
-    
 
 
      public function getUserProfile($username)
@@ -147,15 +203,7 @@ class Api_model extends CI_Model {
     }
 
 
-    public function getConfig($id)
-    {
-        $this->db->select("value,idt,udt");
-        $this->db->from("tbl_config");
-        $this->db->where("option", $id);
-        $this->db->where("enable", "TRUE");
-        $query = $this->db->get();
-        return $query->row_array();
-    }
+   
 
 
     public function getGroupTagInfo($idList=array())

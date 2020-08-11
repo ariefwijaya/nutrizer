@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+defined('MY_API_KEY') OR define('MY_API_KEY', '@123!#$');
+defined('MY_PRIVATE_ASSETS') OR define('MY_PRIVATE_ASSETS', FCPATH."assets_private/");
+defined('MY_DB_ENCRYPT_KEY') OR define('MY_DB_ENCRYPT_KEY', "msc@tc3L");
+defined('STREAM_URL') OR define('STREAM_URL', 'http://150.242.111.19/testapi/');
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

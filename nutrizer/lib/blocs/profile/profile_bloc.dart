@@ -14,7 +14,7 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UserDomain _userDomain = UserDomain();
 
-  ProfileBloc({ProfileState profileState}):super(profileState);
+  ProfileBloc({ProfileState profileState}):super(profileState??ProfileInitial());
 
   @override
   Stream<ProfileState> mapEventToState(

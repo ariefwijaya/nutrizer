@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:nutrizer/routes/router_const.dart';
 import 'package:nutrizer/screens/about_app_screen.dart';
+import 'package:nutrizer/screens/bmi_check_screen.dart';
 import 'package:nutrizer/screens/bmi_update_screen.dart';
 import 'package:nutrizer/screens/bottom_bar_layout_screen.dart';
 import 'package:nutrizer/screens/change_password_screen.dart';
@@ -80,6 +81,11 @@ class Routes {
         return MaterialPageRoute(
             builder: (_) => NutritionDictFoodScreen(
                 nutritionDictModel: routeSettings.arguments),
+            settings: routeSettings);
+
+            case RoutesPath.bmiCheck:
+        return MaterialPageRoute(
+            builder: (_) => BMICheckScreen(screenTitle: routeSettings.arguments,),
             settings: routeSettings);
 
       default:

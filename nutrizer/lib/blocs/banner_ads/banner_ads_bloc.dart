@@ -11,7 +11,7 @@ part 'banner_ads_state.dart';
 class BannerAdsBloc extends Bloc<BannerAdsEvent, BannerAdsState> {
   final BannerDomain bannerDomain = BannerDomain();
 
-  BannerAdsBloc({BannerAdsState bannerAdsState}):super(bannerAdsState);
+  BannerAdsBloc({BannerAdsState bannerAdsState}):super(bannerAdsState??BannerAdsInitial());
 
   @override
   Stream<BannerAdsState> mapEventToState(

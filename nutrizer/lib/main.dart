@@ -4,11 +4,16 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nutrizer/blocs/authentication/authentication_bloc.dart';
 import 'package:nutrizer/blocs/theme/theme_bloc.dart';
+import 'package:nutrizer/constant.dart';
+import 'package:nutrizer/helper/assets_helper.dart';
 import 'package:nutrizer/routes/routes.dart';
 import 'package:nutrizer/screens/bottom_bar_layout_screen.dart';
+import 'package:nutrizer/screens/force_update_screen.dart';
 import 'package:nutrizer/screens/onboarding_screen.dart';
 import 'package:nutrizer/screens/splash_screen.dart';
 import 'package:nutrizer/screens/bmi_user_screen.dart';
+import 'package:nutrizer/widgets/common_widget.dart';
+import 'package:store_redirect/store_redirect.dart';
 
 //For debugging purpose only
 class SimpleBlocDelegate extends BlocObserver {
@@ -34,7 +39,7 @@ class SimpleBlocDelegate extends BlocObserver {
 void main() async {
   await Hive.initFlutter();
   //For debugging purpose only
-  Bloc.observer = SimpleBlocDelegate();
+  // Bloc.observer = SimpleBlocDelegate();
   runApp(MyApp());
 }
 
@@ -77,9 +82,18 @@ class _MyAppState extends State<MyApp> {
 
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
     return MaterialApp(
-      title: 'Nutrizer',
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (BuildContext context, AuthenticationState state) {
+      title: appTitleName,
+      home: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+        if (state is AuthenticationExpiredState) {
+          showExpiredAlert(context);
+        }
+
+        if (state is AppNeedUpdate) {
+          showUpdateAlert(context,state.message);
+        }
+        
+      }, builder: (BuildContext context, AuthenticationState state) {
         if (state is AuthenticationInitialState) {
           return SplashScreen();
         }
@@ -89,6 +103,10 @@ class _MyAppState extends State<MyApp> {
         if (state is AuthenticationAuthenticatedNotCompletedState) {
           return BMIUserScreen();
         }
+
+          if (state is AppForceUpdate) {
+              return ForceUpdateScreen(message: state.message,);
+            }
         return OnBoardingScreen();
       }),
       themeMode: state.themeMode,
@@ -161,4 +179,36 @@ class _MyAppState extends State<MyApp> {
       onGenerateRoute: Routes.generateRoute,
     );
   }
+
+  void showExpiredAlert(BuildContext subContext) {
+    showModalBottomSheet(
+        context: subContext,
+        builder: (context) => ModalBottomCard(
+              imagePath: AssetsHelper.offline,
+              title: "Session telah berakhir",
+              subtitle: "Wah sepertinya kamu sudah login di device lain nih.",
+              labelButton: "OK",
+              onButtonTap: () {
+                Navigator.pop(context);
+               
+              },
+            )).whenComplete(() =>  BlocProvider.of<AuthenticationBloc>(subContext).add(AuthenticationLoggedOutEvent()));
+  }
+}
+
+void showUpdateAlert(BuildContext subContext,String message) {
+   showModalBottomSheet(
+        context: subContext,
+        builder: (context) => ModalBottomCard(
+              imagePath: AssetsHelper.offline,
+              title: "Versi Terbaru telah hadir",
+              subtitle: message,
+              labelButton: "UPDATE",
+              onButtonTap: () {
+                 StoreRedirect.redirect(
+                    androidAppId: androidAppId, iOSAppId: iosAppId);
+                Navigator.pop(context);
+               
+              },
+            ));
 }
