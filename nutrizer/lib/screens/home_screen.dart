@@ -15,11 +15,20 @@ import 'package:nutrizer/widgets/header_widget.dart';
 import 'package:nutrizer/widgets/section_divider_widget.dart';
 
 class HomeScreen extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     Completer<void> _refreshCompleter = Completer<void>();
 
     final _listMenu = [
+        MenuModel(
+          image: AssetsHelper.yoga,
+          name: "Cek Indeks Massa Tubuh",
+          route: RoutesPath.bmiCheck),
+       MenuModel(
+          image: AssetsHelper.calculator,
+          name: "Kalkulator Gizi",
+          route: RoutesPath.nutriCalc),
       MenuModel(
           image: AssetsHelper.yoga,
           name: "Cek Indeks Massa Tubuh",
@@ -36,6 +45,7 @@ class HomeScreen extends StatelessWidget {
           image: AssetsHelper.book,
           name: "Kamus Gizi",
           route: RoutesPath.nutriDict),
+     
     ];
 
     return MultiBlocProvider(
