@@ -30,16 +30,8 @@ class HomeScreen extends StatelessWidget {
           name: "Kalkulator Gizi",
           route: RoutesPath.nutriCalc),
       MenuModel(
-          image: AssetsHelper.yoga,
-          name: "Cek Indeks Massa Tubuh",
-          route: RoutesPath.bmiCheck),
-      MenuModel(
-          image: AssetsHelper.calculator,
-          name: "Kalkulator Gizi",
-          route: RoutesPath.nutriCalc),
-      MenuModel(
           image: AssetsHelper.virus,
-          name: "Informasi tentang COVID",
+          name: "Info Kesehatan",
           route: RoutesPath.kek),
       MenuModel(
           image: AssetsHelper.book,

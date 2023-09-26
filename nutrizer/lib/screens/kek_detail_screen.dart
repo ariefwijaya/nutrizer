@@ -62,7 +62,9 @@ class _KEKDetailScreenState extends State<KEKDetailScreen> {
                   elevation: 6,
                   shadowColor: ColorPrimaryHelper.shadow.withOpacity(0.2),
                   margin: EdgeInsets.only(top: 20),
-                  child: _buildHtmlContent(state.kekModel.content)),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: _buildHtmlContent(state.kekModel.content))),
             );
           }
 

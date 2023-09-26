@@ -83,6 +83,7 @@ class _MyAppState extends State<MyApp> {
   Widget _buildWithTheme(BuildContext context, ThemeState state) {
     return MaterialApp(
       title: appTitleName,
+      debugShowCheckedModeBanner: false,
       home: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
         if (state is AuthenticationExpiredState) {

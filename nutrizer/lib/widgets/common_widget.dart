@@ -90,7 +90,6 @@ class ModalBottomCard extends StatelessWidget {
           style: FontStyleHelper.formHeaderTitle
               .copyWith(fontSize: 20, color: Theme.of(context).accentColor),
         ),
-        
         (subtitle!=null)?
         Container(
           margin: EdgeInsets.only(top: 10,left: 20,right: 20),

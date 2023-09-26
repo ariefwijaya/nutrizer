@@ -81,7 +81,7 @@ class NutritionDictScreen extends StatelessWidget {
                   SizedBox(width: 16),
                   Expanded(
                       child: Text(
-                          "Rekomendasi penatalaksanaan terapi nutrisi COVID-19"))
+                          "Rekomendasi Nutrisi yang dibutuhkan tubuh kamu"))
                 ]),
               ))
         ],
